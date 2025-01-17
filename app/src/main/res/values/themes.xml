@@ -1,0 +1,20 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.TapEvent" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/light_charcoal</item>
+        <item name="colorPrimaryVariant">@color/dark_charcoal</item>
+        <item name="colorSecondary">@color/firebrick</item>
+        <item name="colorSecondaryVariant">@color/sangria</item>
+
+        <item name="android:colorBackground">@color/whitesmoke</item>
+        <item name="colorSurface">@color/light_charcoal</item>
+        <item name="colorOnPrimary">@color/eerie_black</item>
+        <item name="colorOnSecondary">@color/whitesmoke</item>
+        <item name="colorOnBackground">@color/eerie_black</item>
+        <item name="colorOnSurface">@color/eerie_black</item>
+
+        <item name="android:textColor">@color/eerie_black</item>
+    </style>
+
+    <style name="Theme.TapEvent" parent="Base.Theme.TapEvent" />
+</resources>
