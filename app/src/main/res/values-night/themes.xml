@@ -13,4 +13,16 @@
         <item name="colorOnBackground">@color/whitesmoke</item>
         <item name="colorOnSurface">@color/whitesmoke</item>
     </style>
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/dark_charcoal</item>
+        <item name="postSplashScreenTheme">@style/Theme.TapEvent</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/avd_splash_anim</item>
+    </style>
+
+    <style name="NumpadButton.Alternative" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/light_charcoal</item>
+        <item name="tint">@color/eerie_black</item>
+        <item name="android:textColor">@color/eerie_black</item>
+    </style>
 </resources>

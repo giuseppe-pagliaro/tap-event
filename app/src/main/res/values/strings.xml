@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">TapEvent</string>
+
+    <string name="et_hint_numpad">0</string>
+
+    <string name="btn_label_0">0</string>
+    <string name="btn_label_1">1</string>
+    <string name="btn_label_2">2</string>
+    <string name="btn_label_3">3</string>
+    <string name="btn_label_4">4</string>
+    <string name="btn_label_5">5</string>
+    <string name="btn_label_6">6</string>
+    <string name="btn_label_7">7</string>
+    <string name="btn_label_8">8</string>
+    <string name="btn_label_9">9</string>
+    <string name="btn_label_decimal_separator">.</string>
+    <string name="btn_label_enter">Enter</string>
+
+    <string name="btn_description_backspace">backspace</string>
+    <string name="btn_description_clear">clear</string>
 </resources>
