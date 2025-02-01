@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Base.Theme.TapEvent" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/dark_charcoal</item>
@@ -14,7 +14,7 @@
         <item name="colorOnSurface">@color/whitesmoke</item>
     </style>
 
-    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+    <style name="Theme.TapEvent.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/dark_charcoal</item>
         <item name="postSplashScreenTheme">@style/Theme.TapEvent</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/avd_splash_anim</item>

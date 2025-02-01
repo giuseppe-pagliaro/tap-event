@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.giuseppepagliaro.tapevent"
-        minSdk = 24
+        minSdk = 21
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -48,4 +48,10 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.recyclerview)
+
+    implementation(libs.glide)
+    annotationProcessor(libs.compiler)
+
+    implementation(libs.androidx.lifecycle.livedata.ktx)
 }

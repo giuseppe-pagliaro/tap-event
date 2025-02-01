@@ -18,4 +18,44 @@
 
     <string name="btn_description_backspace">backspace</string>
     <string name="btn_description_clear">clear</string>
+
+    <!-- Item -->
+    <string name="item_price_placeholder">12 €</string>
+
+    <!-- Item Selector -->
+    <string name="no_items_available">No %1$s</string>
+    <string name="item_selector_title_placeholder">Location Name</string>
+    <string name="item_selector_btn_selection_finalize_descriptor">finalize selection</string>
+    <string name="item_selector_btn_clear_descriptor">clear items</string>
+
+    <!-- Item Selectable -->
+    <string name="item_selectable_thumbnail_descriptor">thumbnail</string>
+    <string name="item_selectable_name_placeholder">Item Name</string>
+
+    <!-- Item Selected -->
+    <string name="item_selected_btn_add_descriptor">add item</string>
+    <string name="item_selected_btn_remove_descriptor">remove item</string>
+    <string name="item_selected_name_count">%1$s x %2$d</string>
+
+    <!-- Nfc -->
+    <string name="nfc_read_title">Ready to read</string>
+    <string name="nfc_write_title">Ready to write</string>
+    <string name="nfc_subtitle">Tap an NFC Tag</string>
+    <string name="nfc_animation_descriptor">nfc animation</string>
+
+    <string name="nfc_tag_written_successfully">The customer was registered</string>
+    <string name="nfc_adapter_unavailable">Nfc is not available</string>
+    <string name="nfc_no_tag_found">No tag found</string>
+    <string name="nfc_tag_empty">Tag is empty</string>
+    <string name="nfc_tag_does_not_contain_id">Customer ID not found in tag</string>
+    <string name="nfc_tag_not_formattable">Tag is not formattable</string>
+    <string name="nfc_could_not_get_customer_id">Couldn\'t get a customer id</string>
+
+    <!-- Event Activity -->
+    <string name="event_nav_event_title">Event</string>
+    <string name="event_nav_cashpoints_title">Cashpoints</string>
+    <string name="event_nav_stands_title">Stands</string>
+
+    <!-- Errors -->
+    <string name="critical_error">A critical error occurred</string>
 </resources>
