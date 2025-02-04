@@ -34,4 +34,16 @@
         <item name="backgroundTint">@color/firebrick</item>
         <item name="android:textColor">@color/whitesmoke</item>
     </style>
+
+    <style name="Theme.TapEvent.BottomNavigation" parent="Theme.TapEvent">
+        <item name="backgroundTint">@color/light_charcoal_light_hue</item>
+        <item name="itemActiveIndicatorStyle">@style/Theme.TapEvent.BottomNavigation.Indicator</item>
+        <item name="tint">@color/dark_charcoal</item>
+    </style>
+
+    <style name="Theme.TapEvent.BottomNavigation.Indicator" parent="Theme.TapEvent">
+        <item name="backgroundTint">@color/light_charcoal</item>
+        <item name="tint">@color/dark_charcoal</item>
+    </style>
+
 </resources>

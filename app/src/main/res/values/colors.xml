@@ -5,5 +5,6 @@
     <color name="eerie_black">#1E1E1E</color>
     <color name="dark_charcoal">#333333</color>
     <color name="light_charcoal">#73787C</color>
+    <color name="light_charcoal_light_hue">#1A73787C</color>
     <color name="whitesmoke">#F5F5F5</color>
 </resources>

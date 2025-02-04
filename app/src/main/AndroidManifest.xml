@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-sdk tools:overrideLibrary="androidx.core.splashscreen" />
+    <uses-permission android:name="android.permission.NFC" />
 
     <application
         android:allowBackup="true"

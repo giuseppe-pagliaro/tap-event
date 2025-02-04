@@ -12,6 +12,8 @@
         <item name="colorOnSecondary">@color/eerie_black</item>
         <item name="colorOnBackground">@color/whitesmoke</item>
         <item name="colorOnSurface">@color/whitesmoke</item>
+
+        <item name="android:textColor">@color/whitesmoke</item>
     </style>
 
     <style name="Theme.TapEvent.Starting" parent="Theme.SplashScreen">
@@ -24,5 +26,16 @@
         <item name="backgroundTint">@color/light_charcoal</item>
         <item name="tint">@color/eerie_black</item>
         <item name="android:textColor">@color/eerie_black</item>
+    </style>
+
+    <style name="Theme.TapEvent.BottomNavigation">
+        <item name="backgroundTint">@color/light_charcoal_light_hue</item>
+        <item name="itemActiveIndicatorStyle">@style/Theme.TapEvent.BottomNavigation.Indicator</item>
+        <item name="tint">@color/whitesmoke</item>
+    </style>
+
+    <style name="Theme.TapEvent.BottomNavigation.Indicator">
+        <item name="backgroundTint">@color/light_charcoal</item>
+        <item name="tint">@color/whitesmoke</item>
     </style>
 </resources>

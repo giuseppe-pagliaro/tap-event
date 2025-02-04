@@ -1,5 +1,6 @@
 package com.giuseppepagliaro.tapevent.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +14,7 @@ import com.giuseppepagliaro.tapevent.models.Selectable
 
 class ItemSelectableAdapter(
     private val context: Context,
-    private val selectable: List<Selectable>,
+    private var selectable: List<Selectable>,
     private val onSelect: (Int) -> Unit
 ) : RecyclerView.Adapter<ItemSelectableAdapter.ViewHolder>() {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -21,6 +22,12 @@ class ItemSelectableAdapter(
         val tvTitle: TextView = view.findViewById(R.id.tv_title)
         val tvPrice: TextView = view.findViewById(R.id.tv_price)
         val setOnClickListener: (View.OnClickListener) -> Unit = { l -> view.setOnClickListener(l) }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateItems(newSelectable: List<Selectable>) {
+        selectable = newSelectable
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

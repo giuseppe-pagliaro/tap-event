@@ -1,29 +1,33 @@
 package com.giuseppepagliaro.tapevent.adapters
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.giuseppepagliaro.tapevent.R
 import com.giuseppepagliaro.tapevent.models.Selected
 
 class ItemSelectedAdapter(
     private val context: Context,
-    private val selected: List<Selected>,
+    private var selected: List<Selected>,
     private val onItemAdded: (Int) -> Unit,
     private val onItemRemoved: (Int) -> Unit
 ) : RecyclerView.Adapter<ItemSelectedAdapter.ViewHolder>() {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val ivThumbnail: ImageView = view.findViewById(R.id.iv_selected_thumbnail)
         val tvTitleCount: TextView = view.findViewById(R.id.tv_selected_title_count)
         val tvTotalCost: TextView = view.findViewById(R.id.tv_selected_total_cost)
         val btnAdd: ImageButton = view.findViewById(R.id.btn_add_item)
         val btnRemove: ImageButton = view.findViewById(R.id.btn_remove_item)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateItems(newSelected: List<Selected>) {
+        selected = newSelected
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -34,8 +38,6 @@ class ItemSelectedAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val selected = selected[position]
-
-        Glide.with(context).load(selected.item.thumbnail).into(holder.ivThumbnail)
 
         if (selected.count > 1)
             holder.tvTitleCount.text = context.getString(

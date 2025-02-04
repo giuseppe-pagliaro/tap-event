@@ -1,6 +1,7 @@
 [versions]
 agp = "8.5.0"
 androidxJunit = "1.1.5"
+bcprovJdk15on = "1.70"
 core = "1.6.1"
 coreSplashscreen = "1.0.1"
 coreVersion = "1.5.0"
@@ -15,6 +16,7 @@ lifecycleLivedataKtx = "2.8.7"
 material = "1.12.0"
 activity = "1.10.0"
 constraintlayout = "2.2.0"
+materialVersion = "1.11.0"
 mockitoAndroid = "4.x.x"
 mockitoAndroidVersion = "5.0.0"
 mockitoCore = "4.0.0"
@@ -36,6 +38,7 @@ androidx-core-v150 = { module = "androidx.test:core", version.ref = "coreVersion
 androidx-junit-v115 = { module = "androidx.test.ext:junit", version.ref = "androidxJunit" }
 androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
+bcprov-jdk15on = { module = "org.bouncycastle:bcprov-jdk15on", version.ref = "bcprovJdk15on" }
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -45,6 +48,7 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+material-v1110 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
 mockito-android = { module = "org.mockito:mockito-android", version.ref = "mockitoAndroid" }
 mockito-android-v480 = { module = "org.mockito:mockito-android", version.ref = "mockitoMockitoAndroid" }
 mockito-android-v500 = { module = "org.mockito:mockito-android", version.ref = "mockitoAndroidVersion" }

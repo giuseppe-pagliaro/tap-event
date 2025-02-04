@@ -41,6 +41,18 @@ abstract class ItemSelectorViewModel : ViewModel() {
         selected = _selected.map { it.toList() }
     }
 
+    // La passphrase usata per le operazioni di crypt/decrypt.
+    abstract fun getCustomerIdCipherPassphrase(): String
+    // Richiede un nuovo customer ID, che non sarà valido finché non verrà
+    // confermato dal richiedente.
+    abstract fun requestNewCustomerId(): String?
+    // Informa la fonte dei customer ID che la scrittura della tag è andata
+    // a buon fine e che l'ID può essere confermato.
+    abstract fun confirmCustomerId(id: String)
+    // Informa la fonte dei customer ID che si è verificato un errore durante
+    // la scrittura della tag e che l'ID va eliminato.
+    abstract fun cancelCustomerId(id: String)
+
     protected abstract fun getAvailableLocationsSource(): LiveData<List<String>>
     protected abstract fun getSelectable(location: String): List<Selectable>
     protected abstract fun executeTransaction(clientCode: String, items: List<Selected>): Boolean
@@ -67,9 +79,9 @@ abstract class ItemSelectorViewModel : ViewModel() {
             return
         }
 
-        // It is assumed that the method is called from an adapter, where one would
-        // always have access to a valid id for selectable.
-        // Using an invalid index is unexpected behaviour and should be met with an exception.
+        // Questo metodo deve essere chiamato esclusivamente all'interno di un Adapter,
+        // dove si dispone di un indice valido per accedere alla lista di Selectable.
+        // Usare un indice invalido è un comportamento inaspettato e deve provocare un'eccezione.
         val selectable = selectableList[position]
 
         selectableList.removeAt(position)
@@ -85,7 +97,7 @@ abstract class ItemSelectorViewModel : ViewModel() {
             return
         }
 
-        // It is assumed that the method is called from an adapter.
+        // Questo metodo deve essere chiamato esclusivamente all'interno di un Adapter.
         val selectable = selectedList[position].item
         val count = selectedList[position].count
 
@@ -107,7 +119,7 @@ abstract class ItemSelectorViewModel : ViewModel() {
             return
         }
 
-        // It is assumed that the method is called from an adapter.
+        // Questo metodo deve essere chiamato esclusivamente all'interno di un Adapter.
         val selected = selectedList[position]
 
         if (selected.count > 1) {
@@ -133,8 +145,8 @@ abstract class ItemSelectorViewModel : ViewModel() {
 
     fun finalizeTransaction(clientCode: String): Boolean {
         val selectedList = selected.value ?: run {
-            // The UI interactions that call finalizeTransaction should be disabled if
-            // selected list is not populated.
+            // Le azioni della UI che chiamano finalizeTransaction dovrebbero essere disabilitate
+            // se selectedList è vuota, quindi questo non dovrebbe mai succedere.
             Log.w(logTag, "Tried execute a transaction, but there were no items available.")
 
             return false
@@ -174,21 +186,21 @@ abstract class ItemSelectorViewModel : ViewModel() {
 
             var selLocation = _selectedLocation.value
 
-            // If the location is no longer in the available locations,
-            // and it was selected, it should be deselected.
-            // But if the location is still available it shouldn't be changed,
-            // because it would clear the selector for no reason.
+            // Se la Location non è più disponibile ed era selezionata, deselezionala.
+            // Ma, se la Location esiste ancora, lanciare un update della UI sarebbe inutile.
             if (selLocation == null || ! locations.contains(selLocation)) {
                 _selectedLocation.value = locations[0]
             }
 
-            // Updating the index.
+            // Aggiorno l'indice.
             selLocation = _selectedLocation.value
-            // Could happen if the data was cleared in another thread.
+
+            // Potrebbe succedere se i dati sono stati eliminati da un altro thread.
             if (selLocation == null) return@addSource
 
             val selLocationInd = locations.indexOf(selLocation)
-            // Could happen if the locations were changed in another thread.
+
+            // Potrebbe succedere se la Location è stata cambiata in un altro thread.
             if (selLocationInd == -1) return@addSource
 
             if (_selectedLocationInd.value != selLocationInd) {

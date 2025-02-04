@@ -27,6 +27,8 @@
     <string name="item_selector_title_placeholder">Location Name</string>
     <string name="item_selector_btn_selection_finalize_descriptor">finalize selection</string>
     <string name="item_selector_btn_clear_descriptor">clear items</string>
+    <string name="item_selector_btn_add_customer_descriptor">Add Customer</string>
+    <string name="item_selector_select_one_item">Select at least one item</string>
 
     <!-- Item Selectable -->
     <string name="item_selectable_thumbnail_descriptor">thumbnail</string>
@@ -43,13 +45,22 @@
     <string name="nfc_subtitle">Tap an NFC Tag</string>
     <string name="nfc_animation_descriptor">nfc animation</string>
 
-    <string name="nfc_tag_written_successfully">The customer was registered</string>
+    <string name="nfc_success_title">Success</string>
+    <string name="nfc_subtitle_read_successful">Tag was read</string>
+    <string name="nfc_subtitle_write_successful">Tag was written</string>
+
+    <string name="nfc_error_title">Something went wrong</string>
+    <string name="nfc_subtitle_no_tag_found_error">Couldn\'t read tag</string>
+    <string name="nfc_subtitle_empty_tag_error">Tag was empty</string>
+    <string name="nfc_subtitle_id_not_found">No customer id was found</string>
+    <string name="nfc_subtitle_tag_not_formattable">Tag is not formattable</string>
+    <string name="nfc_subtitle_connection_error">The connection was interrupted, please hold the tag longer</string>
+
+    <string name="nfc_read_in_process_title">Reading…</string>
+    <string name="nfc_write_in_process_title">Writing…</string>
+    <string name="nfc_in_process_subtitle">Hold the tag</string>
+
     <string name="nfc_adapter_unavailable">Nfc is not available</string>
-    <string name="nfc_no_tag_found">No tag found</string>
-    <string name="nfc_tag_empty">Tag is empty</string>
-    <string name="nfc_tag_does_not_contain_id">Customer ID not found in tag</string>
-    <string name="nfc_tag_not_formattable">Tag is not formattable</string>
-    <string name="nfc_could_not_get_customer_id">Couldn\'t get a customer id</string>
 
     <!-- Event Activity -->
     <string name="event_nav_event_title">Event</string>

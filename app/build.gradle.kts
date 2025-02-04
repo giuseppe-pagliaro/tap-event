@@ -54,4 +54,6 @@ dependencies {
     annotationProcessor(libs.compiler)
 
     implementation(libs.androidx.lifecycle.livedata.ktx)
+
+    implementation(libs.bcprov.jdk15on)
 }

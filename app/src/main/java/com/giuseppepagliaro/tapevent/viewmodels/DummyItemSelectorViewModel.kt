@@ -13,6 +13,11 @@ class DummyItemSelectorViewModel : ItemSelectorViewModel() {
 
     override val selectableName: String = "Selectables"
 
+    override fun getCustomerIdCipherPassphrase(): String = "super_secure_password"
+    override fun requestNewCustomerId(): String = "this_is_an_actual_customer_id"
+    override fun confirmCustomerId(id: String) { }
+    override fun cancelCustomerId(id: String) { }
+
     companion object {
         private val locationToSelectableCount = mapOf(
             0 to 4,
@@ -57,6 +62,10 @@ class DummyItemSelectorViewModel : ItemSelectorViewModel() {
             val totalPrice = price * count
             val formatter = BigDecimal(totalPrice.toDouble())
             return "${formatter.setScale(2, RoundingMode.HALF_EVEN)} €"
+        }
+
+        override fun toString(): String {
+            return "DummySelectable($name, ${getPrice()})"
         }
     }
 }

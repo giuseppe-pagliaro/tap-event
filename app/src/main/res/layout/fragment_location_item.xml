@@ -4,5 +4,5 @@
     android:layout_height="wrap_content"
     android:text="@string/item_selector_title_placeholder"
     android:textSize="25sp"
-    android:layout_margin="10dp"
+    android:padding="10dp"
     android:textStyle="bold" />

@@ -8,14 +8,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import org.bouncycastle.jce.provider.BouncyCastleProvider
+import java.security.Security
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        installSplashScreen()/*.apply {
-            // TODO startup stuff
-        }*/
+        installSplashScreen()
 
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
