@@ -9,7 +9,7 @@ import androidx.lifecycle.map
 import com.giuseppepagliaro.tapevent.models.Selectable
 import com.giuseppepagliaro.tapevent.models.Selected
 
-abstract class ItemSelectorViewModel : ViewModel() {
+abstract class ItemSelectorFragmentViewModel : ViewModel() {
     private val logTag = "ItemSelectorVM"
 
     private lateinit var _selectable: MediatorLiveData<MutableList<Selectable>>

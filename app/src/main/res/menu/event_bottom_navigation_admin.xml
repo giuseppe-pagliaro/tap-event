@@ -8,11 +8,11 @@
     <item
         android:id="@+id/event_nav_cashpoints"
         android:icon="@drawable/selector_event_nav_cashpoints"
-        android:title="@string/event_nav_cashpoints_title" />
+        android:title="@string/event_cashpoints_title" />
 
     <item
         android:id="@+id/event_nav_stands"
         android:icon="@drawable/selector_event_nav_stands"
-        android:title="@string/event_nav_stands_title" />
+        android:title="@string/event_stands_title" />
 
 </menu>

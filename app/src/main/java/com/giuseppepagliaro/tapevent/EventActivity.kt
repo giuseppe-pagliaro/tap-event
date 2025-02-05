@@ -2,16 +2,17 @@ package com.giuseppepagliaro.tapevent
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
+import com.giuseppepagliaro.tapevent.nfc.NfcView
 import com.giuseppepagliaro.tapevent.nfc.getFromIntent
-import com.giuseppepagliaro.tapevent.viewmodels.DummyItemSelectorViewModel
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class EventActivity : AppCompatActivity() {
-    private var currentItemSelectorFragment: ItemSelectorFragment? = null
+    private lateinit var fragment: Fragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,15 +24,35 @@ class EventActivity : AppCompatActivity() {
             insets
         }
 
-        currentItemSelectorFragment = DummyItemSelectorFragmentWithCustomerCreation()
+        // Carico il fragment di default.
+        fragment = DummyEventFragment() // TODO
+        loadFragment()
 
-        supportFragmentManager
-            .beginTransaction()
-            .replace(
-                R.id.event_fragment_container,
-                currentItemSelectorFragment!!
-            )
-            .commit()
+        // Configuro Navbar.
+        val navbar: BottomNavigationView = findViewById(R.id.event_navbar)
+        navbar.setOnItemSelectedListener { item ->
+            when(item.itemId) {
+                R.id.event_nav_event -> {
+                    fragment = DummyEventFragment() // TODO
+                    loadFragment()
+                    true
+                }
+
+                R.id.event_nav_cashpoints -> {
+                    fragment = DummyItemSelectorFragmentWithCustomerCreation() // TODO
+                    loadFragment()
+                    true
+                }
+
+                R.id.event_nav_stands -> {
+                    fragment = DummyItemSelectorFragmentNoCustomerCreation() // TODO
+                    loadFragment()
+                    true
+                }
+
+                else -> false
+            }
+        }
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -39,7 +60,16 @@ class EventActivity : AppCompatActivity() {
 
         // Gestisci nfc intent
         if (getFromIntent(intent) != null) {
-            currentItemSelectorFragment?.handleNfcIntent(intent)
+            (fragment as NfcView).handleNfcIntent(intent)
         }
+    }
+
+    private fun loadFragment() {
+        // Rimpiazzo il Fragment contenuto nel fragment_container
+        // con quello selezionato dall'utente.
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.event_fragment_container, fragment)
+            .commit()
     }
 }

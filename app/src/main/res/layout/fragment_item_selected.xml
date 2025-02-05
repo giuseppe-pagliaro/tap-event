@@ -19,8 +19,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:src="@drawable/remove_item"
-            android:background="@drawable/btn_remove_bg"
+            android:src="@drawable/ic_item_selected_remove"
+            android:background="@drawable/btn_bg_item_selected_remove"
             android:contentDescription="@string/item_selected_btn_remove_descriptor"
             style="@style/NumpadButton.Alternative"
             android:layout_below="@id/tv_selected_total_cost"/>
@@ -55,8 +55,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:src="@drawable/add_item"
-            android:background="@drawable/btn_add_bg"
+            android:src="@drawable/ic_item_selected_add"
+            android:background="@drawable/btn_bg_item_selected_add"
             android:contentDescription="@string/item_selected_btn_add_descriptor"
             style="@style/NumpadButton.Alternative" />
 

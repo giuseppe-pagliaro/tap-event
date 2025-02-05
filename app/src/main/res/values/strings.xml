@@ -1,43 +1,22 @@
 <resources>
     <string name="app_name">TapEvent</string>
 
-    <string name="et_hint_numpad">0</string>
-
-    <string name="btn_label_0">0</string>
-    <string name="btn_label_1">1</string>
-    <string name="btn_label_2">2</string>
-    <string name="btn_label_3">3</string>
-    <string name="btn_label_4">4</string>
-    <string name="btn_label_5">5</string>
-    <string name="btn_label_6">6</string>
-    <string name="btn_label_7">7</string>
-    <string name="btn_label_8">8</string>
-    <string name="btn_label_9">9</string>
-    <string name="btn_label_decimal_separator">.</string>
-    <string name="btn_label_enter">Enter</string>
-
-    <string name="btn_description_backspace">backspace</string>
-    <string name="btn_description_clear">clear</string>
-
     <!-- Item -->
     <string name="item_price_placeholder">12 €</string>
-
-    <!-- Item Selector -->
     <string name="no_items_available">No %1$s</string>
     <string name="item_selector_title_placeholder">Location Name</string>
     <string name="item_selector_btn_selection_finalize_descriptor">finalize selection</string>
     <string name="item_selector_btn_clear_descriptor">clear items</string>
     <string name="item_selector_btn_add_customer_descriptor">Add Customer</string>
     <string name="item_selector_select_one_item">Select at least one item</string>
-
-    <!-- Item Selectable -->
-    <string name="item_selectable_thumbnail_descriptor">thumbnail</string>
-    <string name="item_selectable_name_placeholder">Item Name</string>
-
-    <!-- Item Selected -->
+    <string name="item_thumbnail_descriptor">thumbnail</string>
+    <string name="item_name_placeholder">Item Name</string>
     <string name="item_selected_btn_add_descriptor">add item</string>
     <string name="item_selected_btn_remove_descriptor">remove item</string>
     <string name="item_selected_name_count">%1$s x %2$d</string>
+    <string name="item_diplayer_sold_id">Sold in: %1$s</string>
+    <string name="item_list_title">Items</string>
+    <string name="item_list_back_btn_descriptor">go back</string>
 
     <!-- Nfc -->
     <string name="nfc_read_title">Ready to read</string>
@@ -60,12 +39,18 @@
     <string name="nfc_write_in_process_title">Writing…</string>
     <string name="nfc_in_process_subtitle">Hold the tag</string>
 
-    <string name="nfc_adapter_unavailable">Nfc is not available</string>
+    <string name="nfc_adapter_unavailable">Nfc is not available on this device</string>
 
     <!-- Event Activity -->
     <string name="event_nav_event_title">Event</string>
-    <string name="event_nav_cashpoints_title">Cashpoints</string>
-    <string name="event_nav_stands_title">Stands</string>
+    <string name="event_cashpoints_title">Cashpoints</string>
+    <string name="event_stands_title">Stands</string>
+    <string name="event_tickets_title">Tickets</string>
+    <string name="event_products_title">Products</string>
+    <string name="event_name_placeholder">Event Name</string>
+    <string name="event_date_placeholder">dd/mm/yyyy</string>
+    <string name="event_check_balance_btn_descriptor">check balance</string>
+    <string name="event_check_balance_label">Check balance</string>
 
     <!-- Errors -->
     <string name="critical_error">A critical error occurred</string>

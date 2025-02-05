@@ -8,6 +8,6 @@
     <item
         android:id="@+id/event_nav_stands"
         android:icon="@drawable/selector_event_nav_stands"
-        android:title="@string/event_nav_stands_title" />
+        android:title="@string/event_stands_title" />
 
 </menu>

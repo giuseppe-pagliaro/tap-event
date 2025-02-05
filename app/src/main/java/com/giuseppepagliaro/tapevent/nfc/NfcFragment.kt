@@ -12,17 +12,16 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.lifecycle.lifecycleScope
 import com.giuseppepagliaro.tapevent.EventActivity
 import com.giuseppepagliaro.tapevent.R
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class NfcFragment : BottomSheetDialogFragment(R.layout.fragment_nfc) {
-    private lateinit var nfcAdapter: NfcAdapter
+    private var nfcAdapter: NfcAdapter? = null
+
     private lateinit var pendingIntent: PendingIntent
     private lateinit var intentFilters: Array<IntentFilter>
     private lateinit var techLists: Array<Array<String>>
@@ -39,7 +38,7 @@ class NfcFragment : BottomSheetDialogFragment(R.layout.fragment_nfc) {
         val context = requireContext()
 
         // Inizializzo NfcAdapter.
-        val nfcAdapter = NfcAdapter.getDefaultAdapter(context)
+        nfcAdapter = NfcAdapter.getDefaultAdapter(context)
         if (nfcAdapter == null) {
             Toast.makeText(
                 context,
@@ -49,7 +48,6 @@ class NfcFragment : BottomSheetDialogFragment(R.layout.fragment_nfc) {
 
             dismiss()
         } else {
-            this.nfcAdapter = nfcAdapter
 
             // Configuro il Pending Intent Per EventActivity
             val intent = Intent(context, EventActivity::class.java)
@@ -88,7 +86,7 @@ class NfcFragment : BottomSheetDialogFragment(R.layout.fragment_nfc) {
     override fun onResume() {
         super.onResume()
 
-        nfcAdapter.enableForegroundDispatch(
+        nfcAdapter?.enableForegroundDispatch(
             activity,
             pendingIntent,
             intentFilters,
@@ -104,7 +102,7 @@ class NfcFragment : BottomSheetDialogFragment(R.layout.fragment_nfc) {
     override fun onPause() {
         super.onPause()
 
-        nfcAdapter.disableForegroundDispatch(activity)
+        nfcAdapter?.disableForegroundDispatch(activity)
 
         val animationDrawable = ivAnimation.drawable
         if (animationDrawable is Animatable) {
@@ -128,7 +126,7 @@ class NfcFragment : BottomSheetDialogFragment(R.layout.fragment_nfc) {
 
         tvDescription.text = context.getString(R.string.nfc_subtitle)
 
-        ivAnimation.setImageResource(R.drawable.avd_splash_anim)
+        ivAnimation.setImageResource(R.drawable.avd_logo)
     }
 
     // Chiamata durante le operazioni di gestione lettura/scrittura tag, che
@@ -150,7 +148,7 @@ class NfcFragment : BottomSheetDialogFragment(R.layout.fragment_nfc) {
         }
     }
 
-    fun onErrorOccurred(error: String) {
+    suspend fun onErrorOccurred(error: String) {
         val context = requireContext()
         requireView()
 
@@ -158,15 +156,13 @@ class NfcFragment : BottomSheetDialogFragment(R.layout.fragment_nfc) {
 
         tvDescription.text = error
 
-        ivAnimation.setImageResource(R.drawable.logo_error)
+        ivAnimation.setImageResource(R.drawable.avd_logo_error)
 
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
-            delay(1500)
-            dismiss()
-        }
+        delay(1500)
+        dismiss()
     }
 
-    fun onOperationCompleted() {
+    suspend fun onOperationCompleted() {
         val context = requireContext()
         requireView()
 
@@ -178,12 +174,10 @@ class NfcFragment : BottomSheetDialogFragment(R.layout.fragment_nfc) {
                 NfcAction.WRITE -> context.getString(R.string.nfc_subtitle_write_successful)
             }
 
-        ivAnimation.setImageResource(R.drawable.logo_success)
+        ivAnimation.setImageResource(R.drawable.avd_logo_success)
 
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Default) {
-            delay(1500)
-            dismiss()
-        }
+        delay(1500)
+        dismiss()
     }
 
     /* END funzioni di setup */

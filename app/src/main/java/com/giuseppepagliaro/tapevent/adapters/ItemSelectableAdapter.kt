@@ -19,7 +19,7 @@ class ItemSelectableAdapter(
 ) : RecyclerView.Adapter<ItemSelectableAdapter.ViewHolder>() {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val ivThumbnail: ImageView = view.findViewById(R.id.iv_thumbnail)
-        val tvTitle: TextView = view.findViewById(R.id.tv_title)
+        val tvTitle: TextView = view.findViewById(R.id.tv_items_title)
         val tvPrice: TextView = view.findViewById(R.id.tv_price)
         val setOnClickListener: (View.OnClickListener) -> Unit = { l -> view.setOnClickListener(l) }
     }

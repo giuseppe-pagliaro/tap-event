@@ -24,12 +24,13 @@ import com.giuseppepagliaro.tapevent.adapters.ItemSelectableAdapter
 import com.giuseppepagliaro.tapevent.adapters.ItemSelectedAdapter
 import com.giuseppepagliaro.tapevent.adapters.NoItemsAdapter
 import com.giuseppepagliaro.tapevent.nfc.NfcAction
-import com.giuseppepagliaro.tapevent.nfc.NfcProvider
-import com.giuseppepagliaro.tapevent.viewmodels.ItemSelectorViewModel
+import com.giuseppepagliaro.tapevent.nfc.TapEventNfcProvider
+import com.giuseppepagliaro.tapevent.nfc.NfcView
+import com.giuseppepagliaro.tapevent.viewmodels.ItemSelectorFragmentViewModel
 
-abstract class ItemSelectorFragment : Fragment(R.layout.fragment_item_selector) {
-    private lateinit var viewModel: ItemSelectorViewModel
-    private lateinit var nfcProvider: NfcProvider
+abstract class ItemSelectorFragment : Fragment(R.layout.fragment_item_selector), NfcView {
+    private lateinit var viewModel: ItemSelectorFragmentViewModel
+    private lateinit var nfcProvider: TapEventNfcProvider
 
     private lateinit var noLocationsLayout: LinearLayout
     private lateinit var regularLayout: ConstraintLayout
@@ -39,10 +40,10 @@ abstract class ItemSelectorFragment : Fragment(R.layout.fragment_item_selector) 
     private lateinit var rwItemsSelectable: RecyclerView
 
     protected abstract val addsNewCustomers: Boolean
-    protected abstract fun getViewModelType(): Class<out ItemSelectorViewModel>
+    protected abstract fun getViewModelType(): Class<out ItemSelectorFragmentViewModel>
 
     // L'Intent viene ricevuto dalla Activity e inoltrato al Fragment.
-    fun handleNfcIntent(intent: Intent) = nfcProvider.handle(intent)
+    override fun handleNfcIntent(intent: Intent) = nfcProvider.handle(intent)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -166,9 +167,9 @@ abstract class ItemSelectorFragment : Fragment(R.layout.fragment_item_selector) 
         nfcProvider.dispose()
     }
 
-    private fun initNfcProvider(): NfcProvider {
+    private fun initNfcProvider(): TapEventNfcProvider {
         if (addsNewCustomers)
-            return NfcProvider(
+            return TapEventNfcProvider(
                 requireContext(),
                 parentFragmentManager,
                 this::onNfcReadResult,
@@ -177,7 +178,7 @@ abstract class ItemSelectorFragment : Fragment(R.layout.fragment_item_selector) 
                 viewModel::requestNewCustomerId
             )
         else
-            return NfcProvider(
+            return TapEventNfcProvider(
                 requireContext(),
                 parentFragmentManager,
                 this::onNfcReadResult,

@@ -10,7 +10,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 // Mette insieme la UI e la Business Logic per l'Nfc.
-class NfcProvider(
+class TapEventNfcProvider(
     private val context: Context,
     private val fragmentManager: FragmentManager,
     private val onNfcReadResult: (String) -> Unit,
@@ -36,13 +36,13 @@ class NfcProvider(
             nfcFragment::onTagTapped,
 
             { cId ->
-            onNfcReadResult(cId)
-            nfcFragment.onOperationCompleted()
+                nfcFragment.onOperationCompleted()
+                onNfcReadResult(cId)
             },
 
             { res, cId ->
-                onNfcWriteResult(res, cId)
                 nfcFragment.onOperationCompleted()
+                onNfcWriteResult(res, cId)
             },
 
             nfcFragment::onErrorOccurred,

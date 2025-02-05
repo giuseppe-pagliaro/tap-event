@@ -8,7 +8,7 @@ import com.giuseppepagliaro.tapevent.models.Selected
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-class DummyItemSelectorViewModel : ItemSelectorViewModel() {
+class DummyItemSelectorFragmentViewModel : ItemSelectorFragmentViewModel() {
     private val logTag = "DummyItemSelectorVM"
 
     override val selectableName: String = "Selectables"

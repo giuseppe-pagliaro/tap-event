@@ -1,6 +1,18 @@
-package com.giuseppepagliaro.tapevent.repositories
+package com.giuseppepagliaro.tapevent.users
 
-class UserPermissionRepository {
+class UserRepository {
+    fun login(username: String, password: String): String {
+        return "" //TODO
+    }
+
+    fun logout(sessionCod: String): Boolean {
+        return false //TODO
+    }
+
+    fun getInternalCodBySession(sessionCod: String): Int? {
+        return null // TODO
+    }
+
     fun isOwner(userId: Int, eventId: Int): Boolean {
         return false // TODO
     }

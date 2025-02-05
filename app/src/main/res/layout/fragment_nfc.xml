@@ -26,7 +26,7 @@
         android:id="@+id/iv_nfc_animated_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/avd_splash_anim"
+        android:src="@drawable/avd_logo"
         android:contentDescription="@string/nfc_animation_descriptor" />
 
 </LinearLayout>

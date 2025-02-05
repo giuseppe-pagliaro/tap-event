@@ -28,9 +28,9 @@ import javax.crypto.spec.SecretKeySpec
 class TapEventNfcHandler(
     private val context: Context,
     private val onTagTapped: suspend () -> Unit,
-    private val onNfcReadResult: (String) -> Unit,
-    private val onNfcWriteResult: (Boolean, String) -> Unit,
-    private val onError: (String) -> Unit,
+    private val onNfcReadResult: suspend (String) -> Unit,
+    private val onNfcWriteResult: suspend (Boolean, String) -> Unit,
+    private val onError: suspend (String) -> Unit,
     private val getPassphrase: () -> String,
     private val requestNewCustomerId: () -> String?
 ) {
