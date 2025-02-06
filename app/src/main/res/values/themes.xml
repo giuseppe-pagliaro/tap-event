@@ -35,4 +35,15 @@
         <item name="tint">@color/dark_charcoal</item>
     </style>
 
+    <style name="Theme.TapEvent.Button.Alternative" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/dark_charcoal</item>
+        <item name="tint">@color/whitesmoke</item>
+        <item name="android:textColor">@color/whitesmoke</item>
+    </style>
+
+    <style name="Theme.TapEvent.Button.Special" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/firebrick</item>
+        <item name="android:textColor">@color/whitesmoke</item>
+    </style>
+
 </resources>

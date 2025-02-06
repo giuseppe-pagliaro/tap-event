@@ -18,7 +18,7 @@
 
         <ImageButton
             android:id="@+id/btn_items_back"
-            style="@style/NumpadButton.Alternative"
+            style="@style/Theme.TapEvent.Button.Alternative"
             android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_bg"

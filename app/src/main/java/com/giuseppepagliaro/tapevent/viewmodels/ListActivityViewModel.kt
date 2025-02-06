@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.giuseppepagliaro.tapevent.models.Displayable
 
-open class ListActivityViewModel(
+class ListActivityViewModel(
     val itemsName: String,
     val items: LiveData<List<Displayable>>
 ) : ViewModel() {

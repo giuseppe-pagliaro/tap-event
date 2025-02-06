@@ -40,7 +40,7 @@ abstract class ItemSelectorFragment : Fragment(R.layout.fragment_item_selector),
     private lateinit var rwItemsSelectable: RecyclerView
 
     protected abstract val addsNewCustomers: Boolean
-    protected abstract fun getViewModelType(): Class<out ItemSelectorFragmentViewModel>
+    protected abstract fun getViewModelFactory(): ItemSelectorFragmentViewModel.Factory
 
     // L'Intent viene ricevuto dalla Activity e inoltrato al Fragment.
     override fun handleNfcIntent(intent: Intent) = nfcProvider.handle(intent)
@@ -48,7 +48,9 @@ abstract class ItemSelectorFragment : Fragment(R.layout.fragment_item_selector),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = ViewModelProvider(this)[getViewModelType()]
+        viewModel = ViewModelProvider(
+            this,
+            getViewModelFactory())[ItemSelectorFragmentViewModel::class.java]
         nfcProvider = initNfcProvider()
     }
 
@@ -89,7 +91,7 @@ abstract class ItemSelectorFragment : Fragment(R.layout.fragment_item_selector),
         // Configura la Selectable List.
         rwItemsSelectable.layoutManager = GridLayoutManager(context, getSpanCount(context))
         val selectableAdapter = ItemSelectableAdapter(context, listOf(), viewModel::selectSelectable)
-        rwItemsSelectable.adapter = NoItemsAdapter(context, viewModel.selectableName)
+        rwItemsSelectable.adapter = NoItemsAdapter(context, viewModel.selectableTypeName)
         viewModel.selectable.observe(viewLifecycleOwner) { items ->
             TransitionManager.beginDelayedTransition(viewRoot, listsTransition)
 
@@ -100,7 +102,7 @@ abstract class ItemSelectorFragment : Fragment(R.layout.fragment_item_selector),
 
                 (rwItemsSelectable.adapter as ItemSelectableAdapter).updateItems(items)
             } else {
-                rwItemsSelectable.adapter = NoItemsAdapter(context, viewModel.selectableName)
+                rwItemsSelectable.adapter = NoItemsAdapter(context, viewModel.selectableTypeName)
             }
 
             viewRoot.requestLayout()
@@ -174,8 +176,8 @@ abstract class ItemSelectorFragment : Fragment(R.layout.fragment_item_selector),
                 parentFragmentManager,
                 this::onNfcReadResult,
                 this::onNfcWriteResult,
-                viewModel::getCustomerIdCipherPassphrase,
-                viewModel::requestNewCustomerId
+                viewModel.getCustomerIdCipherPassphrase,
+                viewModel.requestNewCustomerId
             )
         else
             return TapEventNfcProvider(
@@ -183,7 +185,7 @@ abstract class ItemSelectorFragment : Fragment(R.layout.fragment_item_selector),
                 parentFragmentManager,
                 this::onNfcReadResult,
                 { _, _ -> throw IllegalStateException("This view does not add customers.") },
-                viewModel::getCustomerIdCipherPassphrase
+                viewModel.getCustomerIdCipherPassphrase
             ) { throw IllegalStateException("This view does not add customers.") }
     }
 

@@ -5,11 +5,30 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.map
 import com.giuseppepagliaro.tapevent.models.Selectable
 import com.giuseppepagliaro.tapevent.models.Selected
 
-abstract class ItemSelectorFragmentViewModel : ViewModel() {
+class ItemSelectorFragmentViewModel(
+    val selectableTypeName: String,
+
+    // La passphrase usata per le operazioni di crypt/decrypt.
+    val getCustomerIdCipherPassphrase: () -> String,
+    // Richiede un nuovo customer ID, che non sarà valido finché non verrà
+    // confermato dal richiedente.
+    val requestNewCustomerId: () -> String?,
+    // Informa la fonte dei customer ID che la scrittura della tag è andata
+    // a buon fine e che l'ID può essere confermato.
+    val confirmCustomerId: (id: String) -> Unit,
+    // Informa la fonte dei customer ID che si è verificato un errore durante
+    // la scrittura della tag e che l'ID va eliminato.
+    val cancelCustomerId: (id: String) -> Unit,
+
+    private val getAvailableLocationsSource: () -> LiveData<List<String>>,
+    private val getSelectable: (location: String) -> List<Selectable>,
+    private val executeTransaction: (clientCode: String, items: List<Selected>) -> Boolean
+) : ViewModel() {
     private val logTag = "ItemSelectorVM"
 
     private lateinit var _selectable: MediatorLiveData<MutableList<Selectable>>
@@ -19,8 +38,6 @@ abstract class ItemSelectorFragmentViewModel : ViewModel() {
     private lateinit var _selectedLocationInd: MutableLiveData<Int>
 
     private var lastSelectedLocation: String? = null
-
-    abstract val selectableName: String
 
     val availableLocations: LiveData<List<String>>
     val selectedLocation: LiveData<String>
@@ -40,22 +57,6 @@ abstract class ItemSelectorFragmentViewModel : ViewModel() {
         selectable = _selectable.map { it.toList() }
         selected = _selected.map { it.toList() }
     }
-
-    // La passphrase usata per le operazioni di crypt/decrypt.
-    abstract fun getCustomerIdCipherPassphrase(): String
-    // Richiede un nuovo customer ID, che non sarà valido finché non verrà
-    // confermato dal richiedente.
-    abstract fun requestNewCustomerId(): String?
-    // Informa la fonte dei customer ID che la scrittura della tag è andata
-    // a buon fine e che l'ID può essere confermato.
-    abstract fun confirmCustomerId(id: String)
-    // Informa la fonte dei customer ID che si è verificato un errore durante
-    // la scrittura della tag e che l'ID va eliminato.
-    abstract fun cancelCustomerId(id: String)
-
-    protected abstract fun getAvailableLocationsSource(): LiveData<List<String>>
-    protected abstract fun getSelectable(location: String): List<Selectable>
-    protected abstract fun executeTransaction(clientCode: String, items: List<Selected>): Boolean
 
     fun setSelectedLocation(position: Int) {
         if (position == selectedLocationInd.value) return
@@ -211,5 +212,32 @@ abstract class ItemSelectorFragmentViewModel : ViewModel() {
 
     private fun initAvailableLocations() {
         _availableLocations = getAvailableLocationsSource()
+    }
+
+    class Factory(
+        private val selectableTypeName: String,
+        private val getCustomerIdCipherPassphrase: () -> String,
+        private val requestNewCustomerId: () -> String?,
+        private val confirmCustomerId: (id: String) -> Unit,
+        private val cancelCustomerId: (id: String) -> Unit,
+        private val getAvailableLocationsSource: () -> LiveData<List<String>>,
+        private val getSelectable: (location: String) -> List<Selectable>,
+        private val executeTransaction: (clientCode: String, items: List<Selected>) -> Boolean
+    ) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(ItemSelectorFragmentViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
+                return ItemSelectorFragmentViewModel(
+                    selectableTypeName,
+                    getCustomerIdCipherPassphrase,
+                    requestNewCustomerId,
+                    confirmCustomerId,
+                    cancelCustomerId,
+                    getAvailableLocationsSource,
+                    getSelectable,executeTransaction
+                ) as T
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
+        }
     }
 }

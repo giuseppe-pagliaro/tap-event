@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_event_fragment_check_balance"
         android:background="@drawable/btn_bg"
-        style="@style/NumpadButton.Alternative"
+        style="@style/Theme.TapEvent.Button.Alternative"
         android:contentDescription="@string/event_check_balance_btn_descriptor"
         android:paddingHorizontal="0dp"
         app:layout_constraintEnd_toEndOf="parent"
