@@ -27,30 +27,18 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp" />
 
-    <ImageButton
+    <Button
         android:id="@+id/btn_check_balance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_event_fragment_check_balance"
+        android:text="@string/event_check_balance_btn_label"
         android:background="@drawable/btn_bg"
-        style="@style/Theme.TapEvent.Button.Alternative"
-        android:contentDescription="@string/event_check_balance_btn_descriptor"
-        android:paddingHorizontal="0dp"
+        style="@style/Theme.TapEvent.Button"
+        android:paddingHorizontal="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="20dp"
         android:layout_marginEnd="20dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:text="@string/event_check_balance_label"
-        app:layout_constraintEnd_toStartOf="@id/btn_check_balance"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="@id/btn_check_balance"
-        android:layout_marginBottom="20dp"
-        android:layout_marginEnd="20dp"
-        android:gravity="center_vertical" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view_tickets"

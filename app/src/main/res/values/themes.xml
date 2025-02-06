@@ -1,13 +1,13 @@
 <resources>
     <!-- Base application theme. -->
     <style name="Base.Theme.TapEvent" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/light_charcoal</item>
+        <item name="colorPrimary">@color/light_charcoal_darker_hue</item>
         <item name="colorPrimaryVariant">@color/dark_charcoal</item>
         <item name="colorSecondary">@color/firebrick</item>
         <item name="colorSecondaryVariant">@color/sangria</item>
 
         <item name="android:colorBackground">@color/whitesmoke</item>
-        <item name="colorSurface">@color/light_charcoal</item>
+        <item name="colorSurface">@color/light_charcoal_darker_hue</item>
         <item name="colorOnPrimary">@color/eerie_black</item>
         <item name="colorOnSecondary">@color/whitesmoke</item>
         <item name="colorOnBackground">@color/eerie_black</item>
@@ -31,24 +31,24 @@
     </style>
 
     <style name="Theme.TapEvent.BottomNavigation.Indicator" parent="Theme.TapEvent">
-        <item name="backgroundTint">@color/light_charcoal</item>
+        <item name="backgroundTint">@color/light_charcoal_darker_hue</item>
         <item name="tint">@color/dark_charcoal</item>
     </style>
 
     <style name="Theme.TapEvent.Button" parent="Widget.Material3.Button">
-        <item name="backgroundTint">@color/light_charcoal</item>
+        <item name="backgroundTint">@color/light_charcoal_darker_hue</item>
         <item name="tint">@color/eerie_black</item>
         <item name="android:textColor">@color/eerie_black</item>
     </style>
 
     <style name="Theme.TapEvent.Button.Alternative" parent="Widget.Material3.Button">
-        <item name="backgroundTint">@color/dark_charcoal</item>
-        <item name="tint">@color/whitesmoke</item>
+        <item name="backgroundTint">@color/firebrick</item>
         <item name="android:textColor">@color/whitesmoke</item>
     </style>
 
-    <style name="Theme.TapEvent.Button.Special" parent="Widget.Material3.Button">
-        <item name="backgroundTint">@color/firebrick</item>
+    <style name="Theme.TapEvent.Button.SelectedControls" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/eerie_black</item>
+        <item name="tint">@color/whitesmoke</item>
         <item name="android:textColor">@color/whitesmoke</item>
     </style>
 

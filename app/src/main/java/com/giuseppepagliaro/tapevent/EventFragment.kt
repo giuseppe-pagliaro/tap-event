@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
+import android.widget.Button
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
@@ -56,7 +56,7 @@ abstract class EventFragment : Fragment(R.layout.fragment_event), NfcView {
 
         val tvName: TextView = view.findViewById(R.id.tv_event_name)
         val tvDate: TextView = view.findViewById(R.id.tv_event_date)
-        val btnCheckBalance: ImageButton = view.findViewById(R.id.btn_check_balance)
+        val btnCheckBalance: Button = view.findViewById(R.id.btn_check_balance)
         val cardViewTickets: CardView = view.findViewById(R.id.card_view_tickets)
         val cardViewProducts: CardView = view.findViewById(R.id.card_view_products)
         val rwViewTickets: RecyclerView = view.findViewById(R.id.rw_event_tickets)

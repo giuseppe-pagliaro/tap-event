@@ -57,8 +57,7 @@
     <string name="event_products_title">Products</string>
     <string name="event_name_placeholder">Event Name</string>
     <string name="event_date_placeholder">dd/mm/yyyy</string>
-    <string name="event_check_balance_btn_descriptor">check balance</string>
-    <string name="event_check_balance_label">Check balance</string>
+    <string name="event_check_balance_btn_label">Check Balance</string>
     <string name="event_role_placeholder">Guest</string>
 
     <!-- Errors -->

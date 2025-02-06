@@ -24,10 +24,6 @@ class EventActivity : AppCompatActivity() {
             insets
         }
 
-        // Carico il fragment di default.
-        fragment = DummyEventFragment() // TODO
-        loadFragment()
-
         // Configuro Navbar.
         val navbar: BottomNavigationView = findViewById(R.id.event_navbar)
         navbar.setOnItemSelectedListener { item ->
@@ -53,6 +49,9 @@ class EventActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
+        // Seleziono il fragment di default.
+        navbar.selectedItemId = R.id.event_nav_event
     }
 
     override fun onNewIntent(intent: Intent) {

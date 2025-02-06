@@ -22,7 +22,7 @@
             android:src="@drawable/ic_item_selected_remove"
             android:background="@drawable/btn_bg_item_selected_remove"
             android:contentDescription="@string/item_selected_btn_remove_descriptor"
-            style="@style/Theme.TapEvent.Button.Alternative"
+            style="@style/Theme.TapEvent.Button.SelectedControls"
             android:layout_below="@id/tv_selected_total_cost"/>
 
         <TextView
@@ -58,7 +58,7 @@
             android:src="@drawable/ic_item_selected_add"
             android:background="@drawable/btn_bg_item_selected_add"
             android:contentDescription="@string/item_selected_btn_add_descriptor"
-            style="@style/Theme.TapEvent.Button.Alternative" />
+            style="@style/Theme.TapEvent.Button.SelectedControls" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
