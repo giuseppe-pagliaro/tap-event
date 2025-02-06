@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="firebrick">#B22222</color>
+    <color name="firebrick_hue">#66B22222</color>
     <color name="sangria">#950606</color>
     <color name="eerie_black">#1E1E1E</color>
     <color name="dark_charcoal">#333333</color>
     <color name="light_charcoal">#73787C</color>
-    <color name="light_charcoal_light_hue">#1A73787C</color>
+    <color name="light_charcoal_hue">#1A73787C</color>
     <color name="whitesmoke">#F5F5F5</color>
 </resources>

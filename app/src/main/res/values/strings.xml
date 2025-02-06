@@ -1,6 +1,14 @@
 <resources>
     <string name="app_name">TapEvent</string>
 
+    <!-- Home -->
+    <string name="home_welcome_message">Welcome, %1$s</string>
+    <string name="home_profile_picture_descriptor">profile picture</string>
+    <string name="home_profile_logout">Logout?</string>
+    <string name="home_profile_logout_yes">Yes</string>
+    <string name="home_profile_logout_no">No</string>
+    <string name="home_profile_logout_error">Couldn\'t log out</string>
+
     <!-- Item -->
     <string name="item_price_placeholder">12 €</string>
     <string name="no_items_available">No %1$s</string>
@@ -41,7 +49,7 @@
 
     <string name="nfc_adapter_unavailable">Nfc is not available on this device</string>
 
-    <!-- Event Activity -->
+    <!-- Event -->
     <string name="event_nav_event_title">Event</string>
     <string name="event_cashpoints_title">Cashpoints</string>
     <string name="event_stands_title">Stands</string>
@@ -51,6 +59,7 @@
     <string name="event_date_placeholder">dd/mm/yyyy</string>
     <string name="event_check_balance_btn_descriptor">check balance</string>
     <string name="event_check_balance_label">Check balance</string>
+    <string name="event_role_placeholder">Guest</string>
 
     <!-- Errors -->
     <string name="critical_error">A critical error occurred</string>

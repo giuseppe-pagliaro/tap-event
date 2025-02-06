@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         val btnEvent: Button = findViewById(R.id.btn_event_activity)
         btnEvent.setOnClickListener {
-            val intent = Intent(this, EventActivity::class.java)
+            val intent = Intent(this, DummyHomeActivity::class.java)
             startActivity(intent)
         }
     }

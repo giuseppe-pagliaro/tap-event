@@ -23,7 +23,7 @@
     </style>
 
     <style name="Theme.TapEvent.BottomNavigation">
-        <item name="backgroundTint">@color/light_charcoal_light_hue</item>
+        <item name="backgroundTint">@color/light_charcoal_hue</item>
         <item name="itemActiveIndicatorStyle">@style/Theme.TapEvent.BottomNavigation.Indicator</item>
         <item name="tint">@color/whitesmoke</item>
     </style>
@@ -31,6 +31,12 @@
     <style name="Theme.TapEvent.BottomNavigation.Indicator">
         <item name="backgroundTint">@color/light_charcoal</item>
         <item name="tint">@color/whitesmoke</item>
+    </style>
+
+    <style name="Theme.TapEvent.Button" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/dark_charcoal</item>
+        <item name="tint">@color/whitesmoke</item>
+        <item name="android:textColor">@color/whitesmoke</item>
     </style>
 
     <style name="Theme.TapEvent.Button.Alternative" parent="Widget.Material3.Button">
