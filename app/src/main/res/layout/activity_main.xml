@@ -1,22 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/tv_login_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="@string/login_title"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="150dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btn_event_activity"
+    <TextView
+        android:id="@+id/tv_login_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start Event Activity" />
+        android:text="@string/login_subtitle"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_login_title" />
 
-</LinearLayout>
+    <EditText
+        android:id="@+id/et_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/login_username_hint"
+        android:inputType="text"
+        app:layout_constraintTop_toBottomOf="@id/tv_login_subtitle"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="20dp" />
+
+    <EditText
+        android:id="@+id/et_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/login_password_hint"
+        android:inputType="textPassword"
+        app:layout_constraintTop_toBottomOf="@id/et_username"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="20dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/et_password"
+        app:layout_constraintEnd_toEndOf="@id/et_password"
+        android:layout_marginTop="30dp"
+        android:text="@string/login_btn_label"
+        android:textSize="17sp"
+        app:icon="@drawable/ic_main_login"
+        app:iconGravity="end"
+        android:background="@drawable/btn_bg"
+        style="@style/Theme.TapEvent.Button.Special" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

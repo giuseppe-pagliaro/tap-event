@@ -80,7 +80,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_item_selector_finalize"
             android:background="@drawable/btn_bg"
-            style="@style/Theme.TapEvent.Button.Alternative"
+            style="@style/Theme.TapEvent.Button.Special"
             android:contentDescription="@string/item_selector_btn_selection_finalize_descriptor"
             android:paddingHorizontal="0dp"
             app:layout_constraintEnd_toEndOf="parent"

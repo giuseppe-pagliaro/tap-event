@@ -8,8 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import org.bouncycastle.jce.provider.BouncyCastleProvider
-import java.security.Security
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +23,7 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        val btnEvent: Button = findViewById(R.id.btn_event_activity)
+        val btnEvent: Button = findViewById(R.id.btn_login)
         btnEvent.setOnClickListener {
             val intent = Intent(this, DummyHomeActivity::class.java)
             startActivity(intent)

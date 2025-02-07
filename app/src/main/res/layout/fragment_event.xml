@@ -27,14 +27,15 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_check_balance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/event_check_balance_btn_label"
+        app:icon="@drawable/ic_event_check_balance"
+        app:iconGravity="end"
         android:background="@drawable/btn_bg"
-        style="@style/Theme.TapEvent.Button"
-        android:paddingHorizontal="20dp"
+        style="@style/Theme.TapEvent.Button.Alternative"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="20dp"

@@ -42,14 +42,16 @@
     </style>
 
     <style name="Theme.TapEvent.Button.Alternative" parent="Widget.Material3.Button">
-        <item name="backgroundTint">@color/firebrick</item>
+        <item name="backgroundTint">@color/eerie_black</item>
+        <item name="tint">@color/whitesmoke</item>
+        <item name="iconTint">@color/whitesmoke</item>
         <item name="android:textColor">@color/whitesmoke</item>
     </style>
 
-    <style name="Theme.TapEvent.Button.SelectedControls" parent="Widget.Material3.Button">
-        <item name="backgroundTint">@color/eerie_black</item>
-        <item name="tint">@color/whitesmoke</item>
+    <style name="Theme.TapEvent.Button.Special" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/firebrick</item>
         <item name="android:textColor">@color/whitesmoke</item>
+        <item name="iconTint">@color/eerie_black</item>
     </style>
 
 </resources>

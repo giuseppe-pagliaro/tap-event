@@ -1,6 +1,13 @@
 <resources>
     <string name="app_name">TapEvent</string>
 
+    <!-- Login -->
+    <string name="login_title">Login</string>
+    <string name="login_subtitle">Please sign in to continue</string>
+    <string name="login_username_hint">Username</string>
+    <string name="login_password_hint">Password</string>
+    <string name="login_btn_label">LOGIN</string>
+
     <!-- Home -->
     <string name="home_welcome_message">Welcome, %1$s</string>
     <string name="home_profile_picture_descriptor">profile picture</string>
@@ -57,7 +64,7 @@
     <string name="event_products_title">Products</string>
     <string name="event_name_placeholder">Event Name</string>
     <string name="event_date_placeholder">dd/mm/yyyy</string>
-    <string name="event_check_balance_btn_label">Check Balance</string>
+    <string name="event_check_balance_btn_label">CHECK BALANCE</string>
     <string name="event_role_placeholder">Guest</string>
 
     <!-- Errors -->
