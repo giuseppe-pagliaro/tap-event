@@ -1,35 +1,22 @@
 package com.giuseppepagliaro.tapevent.users
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+
 class UserRepository {
-    fun login(username: String, password: String): String {
+    fun getSessionId(): String? {
+        return "blabla"
+    }
+
+    fun login(username: String, password: String, rememberMe: Boolean): String? {
         return "" //TODO
     }
 
-    fun logout(sessionCod: String): Boolean {
-        return false //TODO
+    fun logout(sessionId: String): Boolean {
+        return true //TODO
     }
 
-    fun getInternalCodBySession(sessionCod: String): Int? {
-        return null // TODO
-    }
-
-    fun isOwner(userId: Int, eventId: Int): Boolean {
-        return false // TODO
-    }
-
-    fun isAdmin(userId: Int, eventId: Int): Boolean {
-        return false // TODO
-    }
-
-    fun isCashier(userId: Int, eventId: Int, cashpointId: Int): Boolean {
-        return false // TODO
-    }
-
-    fun isStandKeeper(userId: Int, eventId: Int, standId: Int): Boolean {
-        return false // TODO
-    }
-
-    fun isGuest(userId: Int, eventId: Int): Boolean {
-        return false // TODO
+    fun getUserInfo(sessionId: String): LiveData<UserInfo>? {
+        return MutableLiveData(UserInfo("User")) // TODO
     }
 }

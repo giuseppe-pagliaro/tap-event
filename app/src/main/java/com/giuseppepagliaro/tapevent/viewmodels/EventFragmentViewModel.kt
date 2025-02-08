@@ -7,35 +7,28 @@ import com.giuseppepagliaro.tapevent.models.Displayable
 import java.util.Date
 
 class EventFragmentViewModel(
-    getEventName: () -> LiveData<String>,
-    getEventDate: () -> LiveData<Date>,
-    getTickets: () -> LiveData<List<Displayable>>,
-    getProducts: () -> LiveData<List<Displayable>>,
+    val name: LiveData<String>,
+    val date: LiveData<Date>,
+    val tickets: LiveData<List<Displayable>>,
+    val products: LiveData<List<Displayable>>,
 
     val getCustomerIdCipherPassphrase: () -> String
 ): ViewModel() {
-
-    val name: LiveData<String> = getEventName()
-    val date: LiveData<Date> = getEventDate()
-
-    val tickets: LiveData<List<Displayable>> = getTickets()
-    val products: LiveData<List<Displayable>> = getProducts()
-
     class Factory(
-        private val getEventName: () -> LiveData<String>,
-        private val getEventDate: () -> LiveData<Date>,
-        private val getTickets: () -> LiveData<List<Displayable>>,
-        private val getProducts: () -> LiveData<List<Displayable>>,
+        private val name: LiveData<String>,
+        private val date: LiveData<Date>,
+        private val tickets: LiveData<List<Displayable>>,
+        private val products: LiveData<List<Displayable>>,
         private val getCustomerIdCipherPassphrase: () -> String
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(EventFragmentViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
                 return EventFragmentViewModel(
-                    getEventName,
-                    getEventDate,
-                    getTickets,
-                    getProducts,
+                    name,
+                    date,
+                    tickets,
+                    products,
                     getCustomerIdCipherPassphrase
                 ) as T
             }

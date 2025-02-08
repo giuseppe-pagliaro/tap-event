@@ -10,16 +10,15 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.giuseppepagliaro.tapevent.R
-import com.giuseppepagliaro.tapevent.dto.EventDto
+import com.giuseppepagliaro.tapevent.models.EventInfo
 import com.giuseppepagliaro.tapevent.entities.Role
 import java.util.Locale
 
 class ItemEventAdapter(
     private val context: Context,
-    private var events: List<EventDto>,
-    private val getRoleFromEvent: (eventCod: Int) -> Role,
+    private var events: List<EventInfo>,
     private val getRoleColor: (Role) -> Int,
-    private val openEventActivity: (event: EventDto) -> Unit
+    private val openEventActivity: (eventCod: Long) -> Unit
 ) : RecyclerView.Adapter<ItemEventAdapter.ViewHolder>() {
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val ivTitle: TextView = view.findViewById(R.id.tv_event_item_title)
@@ -29,7 +28,7 @@ class ItemEventAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateItems(newEvents: List<EventDto>) {
+    fun updateItems(newEvents: List<EventInfo>) {
         events = newEvents
         notifyDataSetChanged()
     }
@@ -42,20 +41,19 @@ class ItemEventAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val event = events[position]
-        val role = getRoleFromEvent(event.cod)
 
         holder.ivTitle.text = event.name
         holder.ivDate.text = event.date.toString()
-        holder.ivRole.text = role.name.lowercase().replaceFirstChar {
+        holder.ivRole.text = event.userRole.name.lowercase().replaceFirstChar {
             if (it.isLowerCase()) it.titlecase(
                 Locale.ROOT
             ) else it.toString()
         }
 
-        holder.cvRole.setCardBackgroundColor(ContextCompat.getColor(context, getRoleColor(role)))
+        holder.cvRole.setCardBackgroundColor(ContextCompat.getColor(context, getRoleColor(event.userRole)))
 
         holder.itemView.setOnClickListener {
-            openEventActivity(event)
+            openEventActivity(event.cod)
         }
     }
 

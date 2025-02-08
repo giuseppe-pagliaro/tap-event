@@ -6,7 +6,11 @@
     <string name="login_subtitle">Please sign in to continue</string>
     <string name="login_username_hint">Username</string>
     <string name="login_password_hint">Password</string>
+    <string name="login_remember_me_label">Remember me</string>
     <string name="login_btn_label">LOGIN</string>
+    <string name="login_missing_fields_msg">Please fill in all the fields</string>
+    <string name="login_failed_msg">Login failed, make sure the username and password are correct</string>
+    <string name="session_expired_msg">The current session is expired, please login</string>
 
     <!-- Home -->
     <string name="home_welcome_message">Welcome, %1$s</string>

@@ -1,10 +1,11 @@
 package com.giuseppepagliaro.tapevent.entities
 
 data class Event(
-    val owner: Int,
-    val cod: Int,
+    val cod: Long,
 
     val name: String,
+
+    val owner: Int,
 
     // Stored as a Timestamp.
     val date: Long

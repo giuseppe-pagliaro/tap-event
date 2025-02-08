@@ -23,7 +23,8 @@ abstract class EventFragment : Fragment(R.layout.fragment_event), NfcView {
     private lateinit var viewModel: EventFragmentViewModel
     private lateinit var nfcProvider: TapEventNfcProvider
 
-    abstract fun getViewModelFactory(): EventFragmentViewModel.Factory
+    protected abstract fun getViewModelFactory(): EventFragmentViewModel.Factory
+    protected abstract fun putSessionIdIntoIntent(intent: Intent)
 
     override fun handleNfcIntent(intent: Intent) = nfcProvider.handle(intent)
 
@@ -156,6 +157,7 @@ abstract class EventFragment : Fragment(R.layout.fragment_event), NfcView {
     private fun onNfcReadResult(clientCod: String) {
         val intent = Intent(requireContext(), TicketsListActivity::class.java)
         intent.putExtra("client_cod", clientCod)
+        putSessionIdIntoIntent(intent)
 
         startActivity(intent)
     }

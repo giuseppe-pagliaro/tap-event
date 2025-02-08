@@ -18,12 +18,12 @@ import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.bumptech.glide.Glide
 import com.giuseppepagliaro.tapevent.adapters.ItemEventAdapter
-import com.giuseppepagliaro.tapevent.dto.EventDto
 import com.giuseppepagliaro.tapevent.viewmodels.HomeActivityViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 abstract class HomeActivity : AppCompatActivity() {
     protected abstract fun getViewModelFactory(): HomeActivityViewModel.Factory
+    protected abstract fun putSessionIdIntoIntent(intent: Intent)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,6 +73,7 @@ abstract class HomeActivity : AppCompatActivity() {
                     // Le flag servono a resettare il Navigation Stack,
                     // per evitare che l'utente possa tornare indietro.
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    intent.putExtra("was_session_invalidated", true)
                     startActivity(intent)
 
                     // Chiudo l'Activity corrente.
@@ -102,7 +103,6 @@ abstract class HomeActivity : AppCompatActivity() {
         rwEvents.adapter = ItemEventAdapter(
             this,
             listOf(),
-            viewModel.getRoleFromEvent,
             viewModel.getRoleColor,
             this::openEventActivity
         )
@@ -117,9 +117,10 @@ abstract class HomeActivity : AppCompatActivity() {
         }
     }
 
-    private fun openEventActivity(event: EventDto) {
+    private fun openEventActivity(eventCod: Long) {
         val intent = Intent(this, EventActivity::class.java)
-        intent.putExtra("event", event)
+        intent.putExtra("event_cod", eventCod)
+        putSessionIdIntoIntent(intent)
 
         startActivity(intent)
     }

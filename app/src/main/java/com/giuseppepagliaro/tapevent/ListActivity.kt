@@ -17,7 +17,7 @@ import com.giuseppepagliaro.tapevent.adapters.ItemDisplayableAdapter
 import com.giuseppepagliaro.tapevent.viewmodels.ListActivityViewModel
 
 abstract class ListActivity : AppCompatActivity() {
-    abstract fun getListActivityViewModelFactory(): ListActivityViewModel.Factory
+    protected abstract fun getListActivityViewModelFactory(): ListActivityViewModel.Factory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

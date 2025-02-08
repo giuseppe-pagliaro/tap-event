@@ -12,9 +12,20 @@ import com.giuseppepagliaro.tapevent.nfc.getFromIntent
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class EventActivity : AppCompatActivity() {
+    private lateinit var sessionId: String
+    private var eventCod: Long = -1
+
     private lateinit var fragment: Fragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        sessionId = intent.getStringExtra("session_id") ?: run {
+            MainActivity.onSessionIdInvalidated(this)
+            return
+        }
+        eventCod = intent.getLongExtra("event_cod", -1)
+        if (eventCod == -1L)
+            throw IllegalArgumentException("Event cod needed to run EventActivity.")
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_event)
@@ -29,19 +40,19 @@ class EventActivity : AppCompatActivity() {
         navbar.setOnItemSelectedListener { item ->
             when(item.itemId) {
                 R.id.event_nav_event -> {
-                    fragment = DummyEventFragment() // TODO
+                    fragment = EventFragmentImpl()
                     loadFragment()
                     true
                 }
 
                 R.id.event_nav_cashpoints -> {
-                    fragment = DummyItemSelectorFragmentWithCustomerCreation() // TODO
+                    fragment = TicketItemSelectorFragment()
                     loadFragment()
                     true
                 }
 
                 R.id.event_nav_stands -> {
-                    fragment = DummyItemSelectorFragmentNoCustomerCreation() // TODO
+                    fragment = ProductsItemSelectorFragment()
                     loadFragment()
                     true
                 }
@@ -64,6 +75,11 @@ class EventActivity : AppCompatActivity() {
     }
 
     private fun loadFragment() {
+        // Inserisco gli argomenti nel fragment.
+        fragment.arguments = Bundle().apply {
+            putString("session_id", sessionId)
+            putLong("event_cod", eventCod)
+        }
         // Rimpiazzo il Fragment contenuto nel fragment_container
         // con quello selezionato dall'utente.
         supportFragmentManager

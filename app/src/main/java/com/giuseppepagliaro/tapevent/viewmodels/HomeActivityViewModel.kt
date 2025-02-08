@@ -4,24 +4,22 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.giuseppepagliaro.tapevent.dto.EventDto
+import com.giuseppepagliaro.tapevent.models.EventInfo
 import com.giuseppepagliaro.tapevent.entities.Role
 
 class HomeActivityViewModel(
     val username: LiveData<String>,
     val profilePic: LiveData<Uri>,
-    val events: LiveData<List<EventDto>>,
+    val events: LiveData<List<EventInfo>>,
 
-    val getRoleFromEvent: (eventCod: Int) -> Role,
     val getRoleColor: (Role) -> Int,
     val onLogout: () -> Boolean
 ) : ViewModel() {
     class Factory(
         private val username: LiveData<String>,
         private val profilePic: LiveData<Uri>,
-        private val events: LiveData<List<EventDto>>,
+        private val events: LiveData<List<EventInfo>>,
 
-        private val getRoleFromEvent: (eventCod: Int) -> Role,
         private val getRoleColor: (Role) -> Int,
         private val onLogout: () -> Boolean
     ) : ViewModelProvider.Factory {
@@ -32,7 +30,6 @@ class HomeActivityViewModel(
                     username,
                     profilePic,
                     events,
-                    getRoleFromEvent,
                     getRoleColor,
                     onLogout
                 ) as T

@@ -17,7 +17,7 @@
         android:theme="@style/Theme.TapEvent.Starting"
         tools:targetApi="31">
         <activity
-            android:name=".DummyHomeActivity"
+            android:name=".HomeActivityImpl"
             android:exported="false"
             android:theme="@style/Theme.TapEvent" />
         <activity
