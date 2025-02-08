@@ -2,9 +2,10 @@ package com.giuseppepagliaro.tapevent.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 
 @Entity(
-    tableName = "product",
+    "customer",
 
     primaryKeys = ["eventCod", "number"],
 
@@ -15,10 +16,14 @@ import androidx.room.ForeignKey
             childColumns = ["eventCod"],
             onDelete = ForeignKey.CASCADE
         )
+    ],
+
+    indices = [
+        Index(value = ["id"], unique = true)
     ]
 )
-data class Product(
+data class Customer(
     val eventCod: Long,
     val number: Int,
-    val name: String
+    val id: String
 )

@@ -136,6 +136,11 @@ abstract class EventFragment : Fragment(R.layout.fragment_event), NfcView {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        nfcProvider.dispose()
+    }
+
     private fun calculateCardViewHeight(
         fragmentHeight: Int,
         eventNameHeight: Int,

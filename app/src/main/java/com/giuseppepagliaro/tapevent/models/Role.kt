@@ -1,4 +1,4 @@
-package com.giuseppepagliaro.tapevent.entities
+package com.giuseppepagliaro.tapevent.models
 
 enum class Role {
     GUEST,

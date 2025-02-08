@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.giuseppepagliaro.tapevent.models.EventInfo
 import com.giuseppepagliaro.tapevent.entities.Event
-import com.giuseppepagliaro.tapevent.entities.Role
+import com.giuseppepagliaro.tapevent.models.Role
 import com.giuseppepagliaro.tapevent.models.Displayable
 import java.util.Date
 

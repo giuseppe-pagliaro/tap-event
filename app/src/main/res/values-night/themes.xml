@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.TapEvent" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/dark_charcoal</item>
-        <item name="colorPrimaryVariant">@color/light_charcoal_darker_hue</item>
+        <item name="colorPrimaryVariant">@color/casper</item>
         <item name="colorSecondary">@color/firebrick</item>
         <item name="colorSecondaryVariant">@color/sangria</item>
 
@@ -29,7 +29,7 @@
     </style>
 
     <style name="Theme.TapEvent.BottomNavigation.Indicator">
-        <item name="backgroundTint">@color/light_charcoal_darker_hue</item>
+        <item name="backgroundTint">@color/casper</item>
         <item name="tint">@color/whitesmoke</item>
     </style>
 

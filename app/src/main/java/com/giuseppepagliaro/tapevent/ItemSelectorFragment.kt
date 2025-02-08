@@ -165,7 +165,6 @@ abstract class ItemSelectorFragment : Fragment(R.layout.fragment_item_selector),
 
     override fun onDestroy() {
         super.onDestroy()
-
         nfcProvider.dispose()
     }
 

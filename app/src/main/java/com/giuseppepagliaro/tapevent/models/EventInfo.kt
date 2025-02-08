@@ -1,7 +1,6 @@
 package com.giuseppepagliaro.tapevent.models
 
 import android.os.Parcelable
-import com.giuseppepagliaro.tapevent.entities.Role
 import kotlinx.parcelize.Parcelize
 import java.util.Date
 

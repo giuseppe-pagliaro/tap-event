@@ -7,7 +7,7 @@ import android.util.Log
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.giuseppepagliaro.tapevent.models.EventInfo
-import com.giuseppepagliaro.tapevent.entities.Role
+import com.giuseppepagliaro.tapevent.models.Role
 import com.giuseppepagliaro.tapevent.repositories.EventRepository
 import com.giuseppepagliaro.tapevent.users.UserRepository
 import com.giuseppepagliaro.tapevent.viewmodels.HomeActivityViewModel

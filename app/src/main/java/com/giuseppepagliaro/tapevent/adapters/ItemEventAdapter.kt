@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.giuseppepagliaro.tapevent.R
 import com.giuseppepagliaro.tapevent.models.EventInfo
-import com.giuseppepagliaro.tapevent.entities.Role
+import com.giuseppepagliaro.tapevent.models.Role
 import java.util.Locale
 
 class ItemEventAdapter(

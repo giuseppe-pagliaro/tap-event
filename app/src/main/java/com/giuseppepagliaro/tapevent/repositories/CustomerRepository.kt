@@ -3,7 +3,6 @@ package com.giuseppepagliaro.tapevent.repositories
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.giuseppepagliaro.tapevent.models.Displayable
-import com.giuseppepagliaro.tapevent.models.TicketInfo
 
 class CustomerRepository {
     fun getCipherPasscode(sessionId: String): String? {

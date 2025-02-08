@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.giuseppepagliaro.tapevent.models.EventInfo
-import com.giuseppepagliaro.tapevent.entities.Role
+import com.giuseppepagliaro.tapevent.models.Role
 
 class HomeActivityViewModel(
     val username: LiveData<String>,

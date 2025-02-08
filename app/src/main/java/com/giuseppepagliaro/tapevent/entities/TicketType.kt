@@ -2,28 +2,24 @@ package com.giuseppepagliaro.tapevent.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "event",
+    "ticket_type",
+
+    primaryKeys = ["eventCod", "number"],
 
     foreignKeys = [
         ForeignKey(
-            entity = InternalUser::class,
+            entity = Event::class,
             parentColumns = ["cod"],
-            childColumns = ["owner"],
+            childColumns = ["eventCod"],
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
-data class Event(
-    @PrimaryKey
-    val cod: Long,
-
+data class TicketType(
+    val eventCod: Long,
+    val number: Int,
     val name: String,
-
-    val owner: Long,
-
-    // Stored as a Timestamp.
-    val date: Long
+    val price: Float
 )
