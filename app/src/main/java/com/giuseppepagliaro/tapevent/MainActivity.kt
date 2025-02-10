@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.giuseppepagliaro.tapevent.users.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +46,7 @@ class MainActivity : AppCompatActivity() {
 
         val areStartupOperationsRunning = AtomicBoolean(true)
         suspend fun startupOperations() {
-            userRepository = UserRepository() // TODO initialization will be more complecated
+            userRepository = UserRepository(this, TapEventDatabase.getDatabase(this))
 
             // Se era stato memorizzato un session id, bypasso la schermata di login.
             // È possibile fornire la flag was_session_invalidated per saltare il
@@ -96,23 +97,26 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val sessionId = userRepository.login(
-                etUsername.text.toString(),
-                etPassword.text.toString(),
-                checkRememberMe.isChecked
-            )
+            var sessionId: String? = null
+            lifecycleScope.launch {
+                sessionId = userRepository.login(
+                    etUsername.text.toString(),
+                    etPassword.text.toString(),
+                    checkRememberMe.isChecked
+                )
+            }.invokeOnCompletion {
+                if (sessionId == null) {
+                    Toast.makeText(
+                        this,
+                        getString(R.string.login_failed_msg),
+                        Toast.LENGTH_SHORT
+                    ).show()
 
-            if (sessionId == null) {
-                Toast.makeText(
-                    this,
-                    getString(R.string.login_failed_msg),
-                    Toast.LENGTH_SHORT
-                ).show()
+                    return@invokeOnCompletion
+                }
 
-                return@setOnClickListener
+                startHomeActivity(sessionId!!)
             }
-
-            startHomeActivity(sessionId)
         }
     }
 

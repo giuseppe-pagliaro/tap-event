@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id("com.google.devtools.ksp")
+    id("kotlin-kapt")
     id("kotlin-parcelize")
 }
 
@@ -39,7 +39,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -48,18 +47,22 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    annotationProcessor(libs.compiler)
 
     implementation(libs.androidx.core.splashscreen)
+
     implementation(libs.androidx.recyclerview)
 
     implementation(libs.glide)
-    annotationProcessor(libs.compiler)
 
     implementation(libs.androidx.lifecycle.livedata.ktx)
 
     implementation(libs.bcprov.jdk15on)
 
     implementation(libs.androidx.room.runtime)
-    ksp(libs.androidx.room.compiler)
+    //noinspection KaptUsageInsteadOfKsp
+    kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
+
+    implementation(libs.androidx.security.crypto)
 }

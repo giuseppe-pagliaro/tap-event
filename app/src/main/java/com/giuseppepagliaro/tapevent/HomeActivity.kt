@@ -12,6 +12,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.AutoTransition
@@ -20,9 +21,10 @@ import com.bumptech.glide.Glide
 import com.giuseppepagliaro.tapevent.adapters.ItemEventAdapter
 import com.giuseppepagliaro.tapevent.viewmodels.HomeActivityViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.launch
 
 abstract class HomeActivity : AppCompatActivity() {
-    protected abstract fun getViewModelFactory(): HomeActivityViewModel.Factory
+    protected abstract suspend fun getViewModelFactory(): HomeActivityViewModel.Factory
     protected abstract fun putSessionIdIntoIntent(intent: Intent)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,85 +37,95 @@ abstract class HomeActivity : AppCompatActivity() {
             insets
         }
 
-        val viewModel = ViewModelProvider(
-            this,
-            getViewModelFactory()
-        )[HomeActivityViewModel::class.java]
+        val activity = this
+        lifecycleScope.launch {
+            val viewModel = ViewModelProvider(
+                activity,
+                getViewModelFactory()
+            )[HomeActivityViewModel::class.java]
 
-        val listsTransition = AutoTransition().apply {
-            duration = 85 // milliseconds
-        }
+            val listsTransition = AutoTransition().apply {
+                duration = 85 // milliseconds
+            }
 
-        val viewRoot: ViewGroup = findViewById(R.id.main)
-        val cvProfile: CardView = findViewById(R.id.cv_profile)
-        val ivProfile: ImageView = findViewById(R.id.iv_profile)
-        val tvWelcome: TextView = findViewById(R.id.tv_welcome)
-        val rwEvents: RecyclerView = findViewById(R.id.rw_events)
+            val viewRoot: ViewGroup = findViewById(R.id.main)
+            val cvProfile: CardView = findViewById(R.id.cv_profile)
+            val ivProfile: ImageView = findViewById(R.id.iv_profile)
+            val tvWelcome: TextView = findViewById(R.id.tv_welcome)
+            val rwEvents: RecyclerView = findViewById(R.id.rw_events)
 
-        // Configuro l'azione di Logout
-        cvProfile.setOnClickListener {
-            val responses = arrayOf(
-                getString(R.string.home_profile_logout_yes),
-                getString(R.string.home_profile_logout_no)
-            )
-            MaterialAlertDialogBuilder(this)
-                .setTitle(getString(R.string.home_profile_logout))
-                .setItems(responses) { _, which ->
-                    if (which != 0) return@setItems
+            // Configuro l'evento di Logout
+            viewModel.logoutEvent.observe(activity) { success ->
+                if (!success) {
+                    Toast.makeText(
+                        activity,
+                        getString(R.string.home_profile_logout_error),
+                        Toast.LENGTH_SHORT
+                    ).show()
 
-                    if (!viewModel.onLogout())
-                        Toast.makeText(
-                            this,
-                            getString(R.string.home_profile_logout_error),
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                    val intent = Intent(this, MainActivity::class.java)
-
-                    // Le flag servono a resettare il Navigation Stack,
-                    // per evitare che l'utente possa tornare indietro.
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    intent.putExtra("was_session_invalidated", true)
-                    startActivity(intent)
-
-                    // Chiudo l'Activity corrente.
-                    finish()
+                    return@observe
                 }
-                .show()
-        }
 
-        // Osservo i LiveData
+                val intent = Intent(activity, MainActivity::class.java)
 
-        viewModel.profilePic.observe(this) { uri ->
-            if (uri == null) return@observe
+                // Le flag servono a resettare il Navigation Stack,
+                // per evitare che l'utente possa tornare indietro.
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                intent.putExtra("was_session_invalidated", true)
+                startActivity(intent)
 
-            Glide
-                .with(this)
-                .load(uri)
-                .into(ivProfile)
-        }
+                // Chiudo l'Activity corrente.
+                finish()
+            }
 
-        viewModel.username.observe(this) { username ->
-            if (username.isNullOrEmpty()) return@observe
+            // Configuro il Logout Popup
+            cvProfile.setOnClickListener {
+                val responses = arrayOf(
+                    getString(R.string.home_profile_logout_yes),
+                    getString(R.string.home_profile_logout_no)
+                )
+                MaterialAlertDialogBuilder(activity)
+                    .setTitle(getString(R.string.home_profile_logout))
+                    .setItems(responses) { _, which ->
+                        if (which == 0/* Yes */)
+                            viewModel.logout()
+                    }
+                    .show()
+            }
 
-            tvWelcome.text = getString(R.string.home_welcome_message, username)
-        }
+            // Osservo i LiveData
 
-        rwEvents.layoutManager = LinearLayoutManager(this)
-        rwEvents.adapter = ItemEventAdapter(
-            this,
-            listOf(),
-            viewModel.getRoleColor,
-            this::openEventActivity
-        )
-        viewModel.events.observe(this) { events ->
-            if (events.isNullOrEmpty()) return@observe
+            viewModel.profilePic.observe(activity) { uri ->
+                if (uri == null) return@observe
 
-            TransitionManager.beginDelayedTransition(viewRoot, listsTransition)
+                Glide
+                    .with(activity)
+                    .load(uri)
+                    .into(ivProfile)
+            }
 
-            (rwEvents.adapter as ItemEventAdapter).updateItems(events)
+            viewModel.username.observe(activity) { username ->
+                if (username.isNullOrEmpty()) return@observe
 
-            viewRoot.requestLayout()
+                tvWelcome.text = getString(R.string.home_welcome_message, username)
+            }
+
+            rwEvents.layoutManager = LinearLayoutManager(activity)
+            rwEvents.adapter = ItemEventAdapter(
+                activity,
+                listOf(),
+                viewModel.getRoleColor,
+                activity::openEventActivity
+            )
+            viewModel.events.observe(activity) { events ->
+                if (events.isNullOrEmpty()) return@observe
+
+                TransitionManager.beginDelayedTransition(viewRoot, listsTransition)
+
+                (rwEvents.adapter as ItemEventAdapter).updateItems(events)
+
+                viewRoot.requestLayout()
+            }
         }
     }
 

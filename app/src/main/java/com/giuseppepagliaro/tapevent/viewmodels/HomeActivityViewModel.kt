@@ -2,10 +2,13 @@ package com.giuseppepagliaro.tapevent.viewmodels
 
 import android.net.Uri
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.giuseppepagliaro.tapevent.models.EventInfo
 import com.giuseppepagliaro.tapevent.models.Role
+import kotlinx.coroutines.launch
 
 class HomeActivityViewModel(
     val username: LiveData<String>,
@@ -13,15 +16,25 @@ class HomeActivityViewModel(
     val events: LiveData<List<EventInfo>>,
 
     val getRoleColor: (Role) -> Int,
-    val onLogout: () -> Boolean
+    private val logoutRequest: suspend () -> Boolean
 ) : ViewModel() {
+    private val _logoutEvent: MutableLiveData<Boolean> = MutableLiveData()
+    val logoutEvent: LiveData<Boolean> = _logoutEvent
+
+    fun logout() {
+        viewModelScope.launch {
+            val success = logoutRequest()
+            _logoutEvent.postValue(success)
+        }
+    }
+
     class Factory(
         private val username: LiveData<String>,
         private val profilePic: LiveData<Uri>,
         private val events: LiveData<List<EventInfo>>,
 
         private val getRoleColor: (Role) -> Int,
-        private val onLogout: () -> Boolean
+        private val logoutRequest: suspend () -> Boolean
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(HomeActivityViewModel::class.java)) {
@@ -31,7 +44,7 @@ class HomeActivityViewModel(
                     profilePic,
                     events,
                     getRoleColor,
-                    onLogout
+                    logoutRequest
                 ) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")

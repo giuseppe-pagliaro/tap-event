@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import android.util.Log
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.giuseppepagliaro.tapevent.models.EventInfo
 import com.giuseppepagliaro.tapevent.models.Role
@@ -16,8 +15,8 @@ import java.util.Date
 class HomeActivityImpl : HomeActivity() {
     private lateinit var sessionId: String
 
-    override fun getViewModelFactory(): HomeActivityViewModel.Factory {
-        val userRepository = UserRepository() // TODO init
+    override suspend fun getViewModelFactory(): HomeActivityViewModel.Factory {
+        val userRepository = UserRepository(this, TapEventDatabase.getDatabase(this))
         val eventRepository = EventRepository() // TODO init
 
         sessionId = intent.getStringExtra("session_id") ?: run {
@@ -27,29 +26,23 @@ class HomeActivityImpl : HomeActivity() {
             // mai mostrata se si raggiunge questo punto.
             return DummyHomeActivity.getDummyFactory(false)
         }
-        val userInfo = userRepository.getUserInfo(sessionId) ?: run {
+
+        val username = userRepository.getUsername(sessionId) ?: run {
             MainActivity.onSessionIdInvalidated(this)
-            return DummyHomeActivity.getDummyFactory(false)
+            MutableLiveData()
+        }
+        val profilePic = userRepository.getProfilePic(sessionId) ?: run {
+            MainActivity.onSessionIdInvalidated(this)
+            MutableLiveData()
         }
         val events = eventRepository.getAll(sessionId) ?: run {
             MainActivity.onSessionIdInvalidated(this)
             return DummyHomeActivity.getDummyFactory(false)
         }
 
-        val username = MediatorLiveData<String>().apply {
-            addSource(userInfo) { user ->
-                value = user.username
-            }
-        }
-        val profilePicture = MediatorLiveData<Uri>().apply {
-            addSource(userInfo) { user ->
-                value = user.profilePicture
-            }
-        }
-
         return HomeActivityViewModel.Factory(
             username,
-            profilePicture,
+            profilePic,
             events,
             {
                 if (isDarkModeEnabled()) R.color.eerie_black
@@ -104,7 +97,7 @@ class DummyHomeActivity : HomeActivity() {
         }
     }
 
-    override fun getViewModelFactory(): HomeActivityViewModel.Factory {
+    override suspend fun getViewModelFactory(): HomeActivityViewModel.Factory {
         return getDummyFactory(isDarkModeEnabled())
     }
 

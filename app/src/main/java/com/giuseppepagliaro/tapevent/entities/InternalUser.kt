@@ -8,9 +8,9 @@ import androidx.room.PrimaryKey
     tableName = "user"
 )
 data class InternalUser(
-    @PrimaryKey
-    val cod: Long,
-    val profilePic: Uri = DEFAULT_PROPIC_URL
+    @PrimaryKey(autoGenerate = true)
+    val cod: Long = 0L,
+    val profilePic: String = DEFAULT_PROPIC_URL.toString()
 ) {
     companion object {
         val DEFAULT_PROPIC_URL: Uri = Uri.parse(
