@@ -116,6 +116,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 startHomeActivity(sessionId!!)
+                finish()
             }
         }
     }

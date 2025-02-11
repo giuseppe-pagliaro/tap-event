@@ -14,6 +14,12 @@ interface UserDao {
     )
     fun getInternalCodByUserAndPwd(username: String, password: String): Long?
 
+    @Query("SELECT u.internalCod " +
+            "FROM user_credentials AS u " +
+            "WHERE u.username = :username"
+    )
+    fun getInternalCodByUsername(username: String): Long?
+
     @Query("SELECT u.username " +
             "FROM user_credentials AS u " +
             "WHERE u.internalCod = :cod"

@@ -114,7 +114,7 @@ class UserRepository(
     suspend fun add(
         username: String,
         password: String,
-        profilePicture: Uri = InternalUser.DEFAULT_PROPIC_URL
+        profilePicture: Uri = Uri.parse(InternalUser.DEFAULT_PROPIC_URL)
     ): Boolean {
         var result: Boolean
         withContext(Dispatchers.IO) {

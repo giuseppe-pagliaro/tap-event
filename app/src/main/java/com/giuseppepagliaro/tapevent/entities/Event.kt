@@ -17,8 +17,8 @@ import androidx.room.PrimaryKey
     ]
 )
 data class Event(
-    @PrimaryKey
-    val cod: Long,
+    @PrimaryKey(autoGenerate = true)
+    val cod: Long = 0,
 
     val name: String,
 

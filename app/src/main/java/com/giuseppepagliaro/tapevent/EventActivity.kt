@@ -2,14 +2,19 @@ package com.giuseppepagliaro.tapevent
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.giuseppepagliaro.tapevent.models.Role
 import com.giuseppepagliaro.tapevent.nfc.NfcView
 import com.giuseppepagliaro.tapevent.nfc.getFromIntent
+import com.giuseppepagliaro.tapevent.repositories.EventRepository
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.launch
 
 class EventActivity : AppCompatActivity() {
     private lateinit var sessionId: String
@@ -60,6 +65,25 @@ class EventActivity : AppCompatActivity() {
                 else -> false
             }
         }
+
+        var role: Role = Role.GUEST
+        lifecycleScope.launch {
+            val eventRepository = EventRepository(TapEventDatabase.getDatabase(this@EventActivity))
+            role = eventRepository.getUserRole(sessionId, eventCod) ?: run {
+                MainActivity.onSessionIdInvalidated(this@EventActivity)
+                return@launch
+            }
+        }.invokeOnCompletion { lifecycleScope.launch {
+            when(role) {
+                Role.GUEST -> navbar.visibility = View.GONE
+
+                Role.CASHIER -> navbar.inflateMenu(R.menu.event_bottom_navigation_cashier)
+
+                Role.STAND_KEEPER -> navbar.inflateMenu(R.menu.event_bottom_navigation_standkeeper)
+
+                else -> {}
+            }
+        } }
 
         // Seleziono il fragment di default.
         navbar.selectedItemId = R.id.event_nav_event

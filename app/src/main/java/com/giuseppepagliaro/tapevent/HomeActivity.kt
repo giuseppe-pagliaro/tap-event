@@ -19,6 +19,7 @@ import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.bumptech.glide.Glide
 import com.giuseppepagliaro.tapevent.adapters.ItemEventAdapter
+import com.giuseppepagliaro.tapevent.adapters.NoItemsAdapter
 import com.giuseppepagliaro.tapevent.viewmodels.HomeActivityViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
@@ -111,20 +112,34 @@ abstract class HomeActivity : AppCompatActivity() {
             }
 
             rwEvents.layoutManager = LinearLayoutManager(activity)
-            rwEvents.adapter = ItemEventAdapter(
+            val eventsAdapter = ItemEventAdapter(
                 activity,
                 listOf(),
                 viewModel.getRoleColor,
                 activity::openEventActivity
             )
+            val noEventsAdapter = NoItemsAdapter(activity, getString(R.string.event_nav_event_title))
+            rwEvents.adapter = noEventsAdapter
+
             viewModel.events.observe(activity) { events ->
-                if (events.isNullOrEmpty()) return@observe
+                if (events == null) return@observe
 
-                TransitionManager.beginDelayedTransition(viewRoot, listsTransition)
+                if (events.isEmpty()) {
+                    TransitionManager.beginDelayedTransition(viewRoot, listsTransition)
 
-                (rwEvents.adapter as ItemEventAdapter).updateItems(events)
+                    rwEvents.adapter = noEventsAdapter
 
-                viewRoot.requestLayout()
+                    viewRoot.requestLayout()
+                } else {
+                    TransitionManager.beginDelayedTransition(viewRoot, listsTransition)
+
+                    if (rwEvents.adapter == noEventsAdapter)
+                        rwEvents.adapter = eventsAdapter
+
+                    (rwEvents.adapter as ItemEventAdapter).updateItems(events)
+
+                    viewRoot.requestLayout()
+                }
             }
         }
     }

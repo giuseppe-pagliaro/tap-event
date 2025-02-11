@@ -20,5 +20,10 @@ import androidx.room.ForeignKey
 data class Product(
     val eventCod: Long,
     val number: Int,
-    val name: String
-)
+    val name: String,
+    val thumbnail: String = DEFAULT_THUMBNAIL_URL
+) {
+    companion object {
+        const val DEFAULT_THUMBNAIL_URL = "android.resource://com.giuseppepagliaro.tapevent/drawable/placeholder"
+    }
+}

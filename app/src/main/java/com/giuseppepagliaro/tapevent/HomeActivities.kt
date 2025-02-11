@@ -17,7 +17,7 @@ class HomeActivityImpl : HomeActivity() {
 
     override suspend fun getViewModelFactory(): HomeActivityViewModel.Factory {
         val userRepository = UserRepository(this, TapEventDatabase.getDatabase(this))
-        val eventRepository = EventRepository() // TODO init
+        val eventRepository = EventRepository(TapEventDatabase.getDatabase(this))
 
         sessionId = intent.getStringExtra("session_id") ?: run {
             MainActivity.onSessionIdInvalidated(this)

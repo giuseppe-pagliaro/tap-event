@@ -17,7 +17,7 @@ class EventFragmentImpl : EventFragment() {
     private lateinit var eventRepository: EventRepository
     private lateinit var clientRepository: CustomerRepository
 
-    override fun getViewModelFactory(): EventFragmentViewModel.Factory {
+    override suspend fun getViewModelFactory(): EventFragmentViewModel.Factory {
         val activity = requireActivity()
 
         sessionId = arguments?.getString("session_id") ?: run {
@@ -30,10 +30,13 @@ class EventFragmentImpl : EventFragment() {
         eventCod = arguments?.getLong("event_cod")
             ?: throw IllegalArgumentException("Event cod needed to start an EventFragment.")
 
-        eventRepository = EventRepository() // TODO init
+        eventRepository = EventRepository(TapEventDatabase.getDatabase(activity))
         clientRepository = CustomerRepository() // TODO init
 
-        val event = eventRepository.getByCod(sessionId, eventCod)
+        val event = eventRepository.getByCod(sessionId, eventCod) ?: run {
+            MainActivity.onSessionIdInvalidated(activity)
+            return DummyEventFragment.dummyFactory
+        }
         val name = MediatorLiveData<String>().apply {
             addSource(event) { event ->
                 value = event.name
@@ -58,7 +61,7 @@ class EventFragmentImpl : EventFragment() {
         intent.putExtra("session_id", sessionId)
     }
 
-    private fun getTickets(): LiveData<List<Displayable>> {
+    private suspend fun getTickets(): LiveData<List<Displayable>> {
         val tickets = eventRepository.getTickets(sessionId, eventCod)
         if (tickets == null) {
             MainActivity.onSessionIdInvalidated(requireActivity())
@@ -68,7 +71,7 @@ class EventFragmentImpl : EventFragment() {
         return tickets
     }
 
-    private fun getProducts(): LiveData<List<Displayable>> {
+    private suspend fun getProducts(): LiveData<List<Displayable>> {
         val products = eventRepository.getProducts(sessionId, eventCod)
         if (products == null) {
             MainActivity.onSessionIdInvalidated(requireActivity())
@@ -108,7 +111,7 @@ class DummyEventFragment : EventFragment() {
         ) { "super_secure_password" }
     }
 
-    override fun getViewModelFactory(): EventFragmentViewModel.Factory {
+    override suspend fun getViewModelFactory(): EventFragmentViewModel.Factory {
         return dummyFactory
     }
 
