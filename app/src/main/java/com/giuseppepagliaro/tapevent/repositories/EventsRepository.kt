@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
 
-class EventRepository(
+class EventsRepository(
     private val database: TapEventDatabase
 ) {
     suspend fun getAll(sessionId: String): LiveData<List<EventInfo>>? {
@@ -43,7 +43,7 @@ class EventRepository(
 
                 var ret: List<EventInfo> = listOf()
                 CoroutineScope(Dispatchers.IO).launch {
-                    ret = items.mapNotNull { it -> eventMap(sessionId, it) }
+                    ret = items.mapNotNull { eventMap(sessionId, it) }
                 }.invokeOnCompletion { CoroutineScope(Dispatchers.Main).launch {
                     value = ret
                 } }
@@ -85,6 +85,7 @@ class EventRepository(
                 tickets = null
                 return@withContext
             }
+
             tickets = database.tickets().getByEvent(eventCod)
         }
 
@@ -95,17 +96,17 @@ class EventRepository(
                 if (items.isNullOrEmpty()) return@outerSource
 
                 var ret: List<Displayable> = listOf()
-                CoroutineScope(Dispatchers.IO).launch {
+                CoroutineScope(Dispatchers.Main).launch {
 
                     // Popolo la lista con un valore di SoldIn temporaneo.
                     ret = items.map { ticket ->
-                        Displayable(ticket.name, listOf(), Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO(thumbnail)
+                        Displayable(ticket.name, listOf(), Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO(ticket thumbnail provider)
                     }
 
                     // Per ogni ticket, eseguo la query per ottenere la SoldIn List.
                     for (i in items.indices) {
                         val it = items[i]
-                        val cashPoints = database.tSells().getCashpointsThatSellsTicket(it.eventCod, it.number)
+                        val cashPoints = database.tSells().getCashPointsThatSellsTicket(it.eventCod, it.name)
 
                         // Popolo la SoldIn List quando man mano che le query finiscono.
                         addSource(cashPoints) innerSource@ { cPoints ->
@@ -118,9 +119,7 @@ class EventRepository(
                                 cPoints.map { cPoint -> cPoint.name },
                                 originalDisplayable.thumbnail
                             )
-                            CoroutineScope(Dispatchers.Main).launch {
-                                value = original
-                            }
+                            value = original
                         }
                     }
                 }.invokeOnCompletion { CoroutineScope(Dispatchers.Main).launch {
@@ -137,6 +136,7 @@ class EventRepository(
                 products = null
                 return@withContext
             }
+
             products = database.products().getByEvent(eventCod)
         }
 
@@ -147,7 +147,7 @@ class EventRepository(
                 if (items.isNullOrEmpty()) return@outerSource
 
                 var ret: List<Displayable> = listOf()
-                CoroutineScope(Dispatchers.IO).launch {
+                CoroutineScope(Dispatchers.Main).launch {
 
                     // Popolo la lista con un valore di SoldIn temporaneo.
                     ret = items.map { product ->
@@ -157,7 +157,7 @@ class EventRepository(
                     // Per ogni product, eseguo la query per ottenere la SoldIn List.
                     for (i in items.indices) {
                         val it = items[i]
-                        val stands = database.pSells().getStandsThatSellsProduct(it.eventCod, it.number)
+                        val stands = database.pSells().getStandsThatSellsProduct(it.eventCod, it.name)
 
                         // Popolo la SoldIn List quando man mano che le query finiscono.
                         addSource(stands) innerSource@ { stds ->
@@ -170,9 +170,7 @@ class EventRepository(
                                 stds.map { stand -> stand.name },
                                 originalDisplayable.thumbnail
                             )
-                            CoroutineScope(Dispatchers.Main).launch {
-                                value = original
-                            }
+                            value = original
                         }
                     }
                 }.invokeOnCompletion { CoroutineScope(Dispatchers.Main).launch {
@@ -228,7 +226,7 @@ class EventRepository(
         role: Role,
 
         // Utilizzato solo se si seleziona il ruolo CASHIER o STAND_KEEPER.
-        locationNumbers: List<Int>, // Lista Vuota => Seleziona Tutti
+        locationNames: List<String>? = null, // Lista Vuota o Null => Seleziona Tutti
     ): Boolean {
         var result: Boolean
         withContext(Dispatchers.IO) {
@@ -251,11 +249,15 @@ class EventRepository(
                         database.participates().upsert(Participates(internalCod, eventCod, false))
                     }
                     Role.CASHIER -> {
-                        val cashpoints = locationNumbers.ifEmpty { database.cashPoints().getAllNumbers(eventCod) }
+                        val cashpoints =
+                            if (locationNames.isNullOrEmpty())
+                                database.cashPoints().getAllNames(eventCod)
+                            else
+                                locationNames
 
-                        for (num in cashpoints)
+                        for (name in cashpoints)
                             try {
-                                database.cpManages().insert(CPManages(internalCod, eventCod, num))
+                                database.cpManages().insert(CPManages(internalCod, eventCod, name))
                             } catch (_: SQLiteConstraintException) {
                                 /* Se un utente gestisce già la location, ignora. */
                             }
@@ -269,11 +271,15 @@ class EventRepository(
                         return@withContext
                     }
                     Role.STAND_KEEPER -> {
-                        val stands = locationNumbers.ifEmpty { database.stands().getAllNumbers(eventCod) }
+                        val stands =
+                            if (locationNames.isNullOrEmpty())
+                                database.stands().getAllNames(eventCod)
+                            else
+                                locationNames
 
-                        for (num in stands) {
+                        for (name in stands) {
                             try {
-                                database.sManages().insert(SManages(internalCod, eventCod, num))
+                                database.sManages().insert(SManages(internalCod, eventCod, name))
                             } catch (_: SQLiteConstraintException) {
                                 /* Se un utente gestisce già la location, ignora. */
                             }
@@ -306,11 +312,11 @@ class EventRepository(
     }
 
     private suspend fun getUserRoleInternalCod(internalCod: Long, eventCod:Long): Role? {
-        if (database.events().isOwner(internalCod, eventCod)) {
+        if (database.events().isOwner(eventCod, internalCod)) {
             return Role.OWNER
         }
 
-        val status = database.participates().getUserParticipationStatus(internalCod, eventCod)
+        val status = database.participates().getUserParticipationStatus(eventCod, internalCod)
         return when (status) {
             true -> Role.ORGANIZER
             false -> userRoleDisambiguate(internalCod, eventCod) ?: Role.GUEST
@@ -321,14 +327,14 @@ class EventRepository(
     private suspend fun userRoleDisambiguate(userCod: Long, eventCod: Long): Role? {
         val role: Role?
         withContext(Dispatchers.IO) {
-            if (database.cpManages().isCashier(userCod, eventCod)) {
-                if (database.sManages().isStander(userCod, eventCod)) {
+            if (database.cpManages().isCashier(eventCod, userCod)) {
+                if (database.sManages().isStander(eventCod, userCod)) {
                     role = Role.MULTI_TASKER
                     return@withContext
                 }
                 role = Role.CASHIER
             } else {
-                if (database.sManages().isStander(userCod, eventCod)) {
+                if (database.sManages().isStander(eventCod, userCod)) {
                     role = Role.STAND_KEEPER
                     return@withContext
                 }

@@ -2,11 +2,12 @@ package com.giuseppepagliaro.tapevent.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 
 @Entity(
     tableName = "cp_manages",
 
-    primaryKeys = ["user", "eventCod", "cashPointNumber"],
+    primaryKeys = ["user", "eventCod", "cashPointName"],
 
     foreignKeys = [
         ForeignKey(
@@ -17,14 +18,20 @@ import androidx.room.ForeignKey
         ),
         ForeignKey(
             entity = CashPoint::class,
-            parentColumns = ["eventCod", "number"],
-            childColumns = ["eventCod", "cashPointNumber"],
+            parentColumns = ["eventCod", "name"],
+            childColumns = ["eventCod", "cashPointName"],
             onDelete = ForeignKey.CASCADE
         )
+    ],
+
+    indices = [
+        Index(value = ["user"], unique = false),
+        Index(value = ["eventCod", "cashPointName"], unique = false),
+        Index(value = ["eventCod"], unique = false)
     ]
 )
 data class CPManages(
     val user: Long,
     val eventCod: Long,
-    val cashPointNumber: Int
+    val cashPointName: String
 )

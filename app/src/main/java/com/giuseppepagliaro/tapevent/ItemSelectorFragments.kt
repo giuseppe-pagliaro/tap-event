@@ -1,97 +1,147 @@
 package com.giuseppepagliaro.tapevent
 
+import android.app.Activity
+import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.giuseppepagliaro.tapevent.models.Selectable
+import com.giuseppepagliaro.tapevent.models.Transaction
+import com.giuseppepagliaro.tapevent.models.TransactionResult
 import com.giuseppepagliaro.tapevent.repositories.CashPointRepository
 import com.giuseppepagliaro.tapevent.repositories.CustomerRepository
 import com.giuseppepagliaro.tapevent.repositories.SelectableRepository
 import com.giuseppepagliaro.tapevent.repositories.StandRepository
 import com.giuseppepagliaro.tapevent.viewmodels.ItemSelectorFragmentViewModel
+import com.giuseppepagliaro.tapevent.viewmodels.ProductSelectorFragmentViewModel
+import com.giuseppepagliaro.tapevent.viewmodels.TicketSelectorFragmentViewModel
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlin.reflect.KClass
+import kotlin.reflect.full.primaryConstructor
 
-class TicketItemSelectorFragment : ItemSelectorFragmentWithRepo(
-    CashPointRepository()
-) {
+class TicketItemSelectorFragment : ItemSelectorFragment() {
     override val addsNewCustomers: Boolean = true
-}
+    override val viewModelType = TicketSelectorFragmentViewModel::class.java
 
-class ProductsItemSelectorFragment : ItemSelectorFragmentWithRepo(
-    StandRepository()
-) {
-    override val addsNewCustomers: Boolean = false
-}
+    override fun getViewModelFactory(): TicketSelectorFragmentViewModel.Factory {
+        val viewModelProvider = ItemSelectorViewModelProvider(
+            requireActivity(),
+            CashPointRepository::class,
+            arguments
+        )
 
-abstract class ItemSelectorFragmentWithRepo(
-    private val selectableRepository: SelectableRepository
-) : ItemSelectorFragment() {
-    private lateinit var sessionId: String
-    private var eventCod: Long = -1
-
-    private lateinit var customerRepository: CustomerRepository
-
-    override fun getViewModelFactory(): ItemSelectorFragmentViewModel.Factory {
-        val activity = requireActivity()
-
-        sessionId = arguments?.getString("session_id") ?: run {
-            MainActivity.onSessionIdInvalidated(activity)
-
-            // Ritorna un'istanza banale della Factory, perché tanto la view non verrà
-            // mai mostrata se si raggiunge questo punto.
-            return DummyHelper.getDummyViewModelFactory()
-        }
-        eventCod = arguments?.getLong("event_cod")
-            ?: throw IllegalArgumentException("Event cod needed to start an EventFragment.")
-
-        customerRepository = CustomerRepository()
-
-        return ItemSelectorFragmentViewModel.Factory(
+        return TicketSelectorFragmentViewModel.Factory(
             getString(R.string.event_tickets_title),
-            this::getPassphrase,
-            { customerRepository.requestNewCustomerId(sessionId) },
-            { id -> customerRepository.confirmCustomerId(sessionId, id) },
-            { id -> customerRepository.cancelCustomerId(sessionId, id) },
-            this::getLocations,
-            this::getSelectable,
-            { id, items -> selectableRepository.executeTransaction(sessionId, id, items) }
+            viewModelProvider::getPassphrase,
+            viewModelProvider::requestNewCustomerId,
+            viewModelProvider::confirmCustomerId,
+            viewModelProvider::cancelCustomerId,
+            viewModelProvider::getLocations,
+            viewModelProvider::getSelectable,
+            viewModelProvider::executeTransaction
         )
     }
+}
 
-    private fun getPassphrase(): String {
-        val passphrase = customerRepository.getCipherPasscode(sessionId)
+class ProductsItemSelectorFragment : ItemSelectorFragment() {
+    override val addsNewCustomers: Boolean = false
+    override val viewModelType = ProductSelectorFragmentViewModel::class.java
+
+    override fun getViewModelFactory(): ProductSelectorFragmentViewModel.Factory {
+        val viewModelProvider = ItemSelectorViewModelProvider(
+            requireActivity(),
+            StandRepository::class,
+            arguments
+        )
+
+        return ProductSelectorFragmentViewModel.Factory(
+            getString(R.string.event_products_title),
+            viewModelProvider::getPassphrase,
+            viewModelProvider::getLocations,
+            viewModelProvider::getSelectable,
+            viewModelProvider::executeTransaction
+        )
+    }
+}
+
+private class ItemSelectorViewModelProvider<T : SelectableRepository>(
+    private val activity: Activity,
+    selectableRepositoryType: KClass<T>,
+    arguments: Bundle?
+) {
+    private val sessionId: String = arguments?.getString("session_id") ?: run {
+        MainActivity.onSessionIdInvalidated(activity)
+        ""
+    }
+    private val eventCod: Long = arguments?.getLong("event_cod")
+        ?: throw IllegalArgumentException("Event cod needed to start an EventFragment.")
+
+    private val selectableRepository: SelectableRepository
+    private val customerRepository: CustomerRepository
+
+    init {
+        val database = TapEventDatabase.getDatabase(activity)
+        customerRepository = CustomerRepository(database, eventCod)
+        selectableRepository = selectableRepositoryType.primaryConstructor?.call(database, eventCod)
+            ?: throw IllegalArgumentException("Invalid Repository Type")
+    }
+
+    suspend fun getPassphrase(): String {
+        val passphrase = customerRepository.getCipherPassphrase(sessionId)
         if (passphrase == null) {
-            MainActivity.onSessionIdInvalidated(requireActivity())
+            MainActivity.onSessionIdInvalidated(activity)
             return ""
         }
 
         return passphrase
     }
 
-    private fun getLocations(): LiveData<List<String>> {
-        val locations = selectableRepository.getAvailableLocations(sessionId, eventCod)
+    suspend fun requestNewCustomerId(): String? {
+        return customerRepository.requestNewCustomerId(sessionId)
+    }
+
+    suspend fun confirmCustomerId(id: String) {
+        return customerRepository.confirmCustomerId(sessionId, id)
+    }
+
+    suspend fun cancelCustomerId(id: String) {
+        return customerRepository.cancelCustomerId(sessionId, id)
+    }
+
+    suspend fun getLocations(): LiveData<List<String>> {
+        val locations = selectableRepository.getAvailableLocations(sessionId)
         if (locations == null) {
-            MainActivity.onSessionIdInvalidated(requireActivity())
+            MainActivity.onSessionIdInvalidated(activity)
             return MutableLiveData()
         }
 
         return locations
     }
 
-    private fun getSelectable(location: String): List<Selectable> {
-        val selectable = selectableRepository.getSelectable(sessionId, eventCod, location)
+    suspend fun getSelectable(location: String): List<Selectable> {
+        val selectable = selectableRepository.getSelectable(sessionId, location)
         if (selectable == null) {
-            MainActivity.onSessionIdInvalidated(requireActivity())
+            MainActivity.onSessionIdInvalidated(activity)
             return listOf()
         }
 
         return selectable
     }
+
+    suspend fun executeTransaction(id: String, items: List<Transaction>): TransactionResult {
+        val result = selectableRepository.executeTransactions(sessionId, id, items)
+        if (result == TransactionResult.ERROR) {
+            MainActivity.onSessionIdInvalidated(activity)
+        }
+
+        return result
+    }
 }
 
 class DummyItemSelectorFragmentWithCustomerCreation : ItemSelectorFragment() {
     override val addsNewCustomers: Boolean = true
+    override val viewModelType = ItemSelectorFragmentViewModel::class.java
 
     override fun getViewModelFactory(): ItemSelectorFragmentViewModel.Factory =
         DummyHelper.getDummyViewModelFactory()
@@ -99,6 +149,7 @@ class DummyItemSelectorFragmentWithCustomerCreation : ItemSelectorFragment() {
 
 class DummyItemSelectorFragmentNoCustomerCreation : ItemSelectorFragment() {
     override val addsNewCustomers: Boolean = false
+    override val viewModelType = ItemSelectorFragmentViewModel::class.java
 
     override fun getViewModelFactory(): ItemSelectorFragmentViewModel.Factory =
         DummyHelper.getDummyViewModelFactory()
@@ -140,7 +191,7 @@ private class DummyHelper {
                 { location -> locationToSelectable[location]!! },
                 { clientCode, items ->
                     Log.d(LOG_TAG, "Added to client $clientCode: $items")
-                    true
+                    TransactionResult.OK
                 }
             )
         }
@@ -149,11 +200,11 @@ private class DummyHelper {
     private class DummySelectable(
         name: String,
         private val price: Float
-    ) : Selectable(name) {
+    ) : Selectable(name, "dummy$") {
         override fun getPrice(count: Int): String {
             val totalPrice = price * count
             val formatter = BigDecimal(totalPrice.toDouble())
-            return "${formatter.setScale(2, RoundingMode.HALF_EVEN)} €"
+            return "${formatter.setScale(2, RoundingMode.HALF_EVEN)} $currencyName"
         }
 
         override fun toString(): String {

@@ -2,11 +2,12 @@ package com.giuseppepagliaro.tapevent.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 
 @Entity(
     "ticket_type",
 
-    primaryKeys = ["eventCod", "number"],
+    primaryKeys = ["eventCod", "name"],
 
     foreignKeys = [
         ForeignKey(
@@ -15,11 +16,14 @@ import androidx.room.ForeignKey
             childColumns = ["eventCod"],
             onDelete = ForeignKey.CASCADE
         )
+    ],
+
+    indices = [
+        Index(value = ["eventCod"], unique = false)
     ]
 )
 data class TicketType(
     val eventCod: Long,
-    val number: Int,
     val name: String,
     val price: Float
 )

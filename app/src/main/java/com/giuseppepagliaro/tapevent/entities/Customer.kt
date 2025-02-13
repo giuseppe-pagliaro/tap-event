@@ -3,27 +3,28 @@ package com.giuseppepagliaro.tapevent.entities
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
+import androidx.room.PrimaryKey
 
 @Entity(
     "customer",
-
-    primaryKeys = ["eventCod", "number"],
 
     foreignKeys = [
         ForeignKey(
             entity = Event::class,
             parentColumns = ["cod"],
-            childColumns = ["eventCod"],
+            childColumns = ["event"],
             onDelete = ForeignKey.CASCADE
         )
     ],
 
     indices = [
-        Index(value = ["id"], unique = true)
+        Index(value = ["event"], unique = false)
     ]
 )
 data class Customer(
-    val eventCod: Long,
-    val number: Int,
-    val id: String
+    @PrimaryKey
+    val id: String,
+
+    val event: Long,
+    val isConfirmed: Boolean
 )

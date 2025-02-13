@@ -1,17 +1,17 @@
 package com.giuseppepagliaro.tapevent.models
 
-import android.net.Uri
-
+// Le proprietà sono pubbliche per essere accessibili dal Room ORM.
+@Suppress("MemberVisibilityCanBePrivate")
 class ProductInfo : Selectable {
     val ticketName: String
     val priceTickets: Int
 
-    constructor(name: String, priceTickets: Int, ticketName: String) : super(name) {
+    constructor(name: String, thumbnail: String, ticketName: String, priceTickets: Int) : super(name, ticketName, thumbnail) {
         this.priceTickets = priceTickets
         this.ticketName = ticketName
     }
 
-    constructor(name: String, priceTickets: Int, ticketName: String, thumbnail: Uri) : super(name, thumbnail) {
+    constructor(name: String, priceTickets: Int, ticketName: String) : super(name, ticketName) {
         this.priceTickets = priceTickets
         this.ticketName = ticketName
     }

@@ -2,6 +2,7 @@ package com.giuseppepagliaro.tapevent.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 
 @Entity(
     tableName = "participates",
@@ -21,6 +22,11 @@ import androidx.room.ForeignKey
             childColumns = ["event"],
             onDelete = ForeignKey.CASCADE
         )
+    ],
+
+    indices = [
+        Index(value = ["user"], unique = false),
+        Index(value = ["event"], unique = false)
     ]
 )
 data class Participates(

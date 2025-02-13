@@ -2,6 +2,7 @@ package com.giuseppepagliaro.tapevent.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
@@ -14,6 +15,10 @@ import androidx.room.PrimaryKey
             childColumns = ["owner"],
             onDelete = ForeignKey.CASCADE
         )
+    ],
+
+    indices = [
+        Index(value = ["owner"], unique = false)
     ]
 )
 data class Event(

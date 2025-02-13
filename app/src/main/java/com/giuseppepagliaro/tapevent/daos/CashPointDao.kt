@@ -1,5 +1,6 @@
 package com.giuseppepagliaro.tapevent.daos
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -12,12 +13,12 @@ interface CashPointDao {
     @Query("SELECT * " +
             "FROM cash_point AS c " +
             "WHERE c.eventCod = :eventCod")
-    fun getAll(eventCod: Long): List<CashPoint>
+    fun getAll(eventCod: Long): LiveData<List<CashPoint>>
 
-    @Query("SELECT c.number " +
+    @Query("SELECT c.name " +
             "FROM cash_point AS c " +
             "WHERE c.eventCod = :eventCod")
-    fun getAllNumbers(eventCod: Long): List<Int>
+    fun getAllNames(eventCod: Long): List<String>
 
     @Insert
     fun insert(cashPoint: CashPoint): Long?

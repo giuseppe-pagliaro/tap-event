@@ -31,8 +31,8 @@ class TapEventNfcHandler(
     private val onNfcReadResult: suspend (String) -> Unit,
     private val onNfcWriteResult: suspend (Boolean, String) -> Unit,
     private val onError: suspend (String) -> Unit,
-    private val getPassphrase: () -> String,
-    private val requestNewCustomerId: () -> String?
+    private val getPassphrase: suspend () -> String,
+    private val requestNewCustomerId: suspend () -> String?
 ) {
     companion object {
         const val MIME_TYPE = "application/com.giuseppepagliaro.tapevent.customerid"
@@ -182,7 +182,7 @@ class TapEventNfcHandler(
     private val cipherAlgorithm = "AES"
     private val cipherTransformation = "AES/GCM/NoPadding"
 
-    private fun encryptCustomerId(customerId: String, tagUid: ByteArray): ByteArray {
+    private suspend fun encryptCustomerId(customerId: String, tagUid: ByteArray): ByteArray {
         val cipher = Cipher.getInstance(cipherTransformation)
 
         // Genera un IV casuale.
@@ -204,7 +204,7 @@ class TapEventNfcHandler(
         return combined
     }
 
-    private fun decryptCustomerId(encryptedCustomerId: ByteArray, tagUid: ByteArray): String {
+    private suspend fun decryptCustomerId(encryptedCustomerId: ByteArray, tagUid: ByteArray): String {
         // Estrai IV e dati criptati.
         val iv = Arrays.copyOfRange(encryptedCustomerId, 0, ivSize)
         val encryptedBytes = Arrays.copyOfRange(encryptedCustomerId, ivSize, encryptedCustomerId.size)
@@ -217,7 +217,7 @@ class TapEventNfcHandler(
         return String(decryptedData, StandardCharsets.UTF_8)
     }
 
-    private fun getKey(
+    private suspend fun getKey(
         tagUid: ByteArray // L'Uid della tag è usato come salt.
     ): SecretKey {
         val factory = SecretKeyFactory.getInstance(keyGenAlgorithm)

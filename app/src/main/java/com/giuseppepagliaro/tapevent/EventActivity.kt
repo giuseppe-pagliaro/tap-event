@@ -12,7 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import com.giuseppepagliaro.tapevent.models.Role
 import com.giuseppepagliaro.tapevent.nfc.NfcView
 import com.giuseppepagliaro.tapevent.nfc.getFromIntent
-import com.giuseppepagliaro.tapevent.repositories.EventRepository
+import com.giuseppepagliaro.tapevent.repositories.EventsRepository
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
 
@@ -68,7 +68,7 @@ class EventActivity : AppCompatActivity() {
 
         var role: Role = Role.GUEST
         lifecycleScope.launch {
-            val eventRepository = EventRepository(TapEventDatabase.getDatabase(this@EventActivity))
+            val eventRepository = EventsRepository(TapEventDatabase.getDatabase(this@EventActivity))
             role = eventRepository.getUserRole(sessionId, eventCod) ?: run {
                 MainActivity.onSessionIdInvalidated(this@EventActivity)
                 return@launch

@@ -2,10 +2,12 @@ package com.giuseppepagliaro.tapevent.repositories
 
 import androidx.lifecycle.LiveData
 import com.giuseppepagliaro.tapevent.models.Selectable
-import com.giuseppepagliaro.tapevent.models.Selected
+import com.giuseppepagliaro.tapevent.models.Transaction
+import com.giuseppepagliaro.tapevent.models.TransactionResult
 
 interface SelectableRepository {
-    fun getAvailableLocations(sessionId: String, eventCod: Long): LiveData<List<String>>?
-    fun getSelectable(sessionId: String, eventCod: Long, locationName: String): List<Selectable>?
-    fun executeTransaction(sessionId: String, customerId: String, items: List<Selected>): Boolean
+    suspend fun getAvailableLocations(sessionId: String): LiveData<List<String>>?
+    suspend fun getSelectable(sessionId: String, locationName: String): List<Selectable>?
+    suspend fun executeTransactions(sessionId: String, customerId: String, items: List<Transaction>): TransactionResult
+    suspend fun add(sessionId: String, name: String): Boolean
 }

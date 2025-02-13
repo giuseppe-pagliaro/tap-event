@@ -4,10 +4,11 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.giuseppepagliaro.tapevent.models.EventInfo
 import com.giuseppepagliaro.tapevent.models.Role
-import com.giuseppepagliaro.tapevent.repositories.EventRepository
+import com.giuseppepagliaro.tapevent.repositories.EventsRepository
 import com.giuseppepagliaro.tapevent.users.UserRepository
 import com.giuseppepagliaro.tapevent.viewmodels.HomeActivityViewModel
 import java.util.Date
@@ -15,10 +16,10 @@ import java.util.Date
 class HomeActivityImpl : HomeActivity() {
     private lateinit var sessionId: String
 
-    override suspend fun getViewModelFactory(): HomeActivityViewModel.Factory {
-        val userRepository = UserRepository(this, TapEventDatabase.getDatabase(this))
-        val eventRepository = EventRepository(TapEventDatabase.getDatabase(this))
+    private lateinit var userRepository: UserRepository
+    private lateinit var eventsRepository: EventsRepository
 
+    override fun getViewModelFactory(): HomeActivityViewModel.Factory {
         sessionId = intent.getStringExtra("session_id") ?: run {
             MainActivity.onSessionIdInvalidated(this)
 
@@ -27,23 +28,13 @@ class HomeActivityImpl : HomeActivity() {
             return DummyHomeActivity.getDummyFactory(false)
         }
 
-        val username = userRepository.getUsername(sessionId) ?: run {
-            MainActivity.onSessionIdInvalidated(this)
-            MutableLiveData()
-        }
-        val profilePic = userRepository.getProfilePic(sessionId) ?: run {
-            MainActivity.onSessionIdInvalidated(this)
-            MutableLiveData()
-        }
-        val events = eventRepository.getAll(sessionId) ?: run {
-            MainActivity.onSessionIdInvalidated(this)
-            return DummyHomeActivity.getDummyFactory(false)
-        }
+        userRepository = UserRepository(this, TapEventDatabase.getDatabase(this))
+        eventsRepository = EventsRepository(TapEventDatabase.getDatabase(this))
 
         return HomeActivityViewModel.Factory(
-            username,
-            profilePic,
-            events,
+            this::getUsername,
+            this::getProfilePic,
+            this::getEvents,
             {
                 if (isDarkModeEnabled()) R.color.eerie_black
                 else R.color.whitesmoke
@@ -54,6 +45,33 @@ class HomeActivityImpl : HomeActivity() {
 
     override fun putSessionIdIntoIntent(intent: Intent) {
         intent.putExtra("session_id", sessionId)
+    }
+
+    private suspend fun getUsername(): LiveData<String> {
+        val username = userRepository.getUsername(sessionId) ?: run {
+            MainActivity.onSessionIdInvalidated(this)
+            MutableLiveData()
+        }
+
+        return username
+    }
+
+    private suspend fun getProfilePic(): LiveData<Uri> {
+        val profilePic = userRepository.getProfilePic(sessionId) ?: run {
+            MainActivity.onSessionIdInvalidated(this)
+            MutableLiveData()
+        }
+
+        return profilePic
+    }
+
+    private suspend fun getEvents(): LiveData<List<EventInfo>> {
+        val events = eventsRepository.getAll(sessionId) ?: run {
+            MainActivity.onSessionIdInvalidated(this)
+            MutableLiveData()
+        }
+
+        return events
     }
 
     private fun isDarkModeEnabled(): Boolean {
@@ -68,13 +86,13 @@ class DummyHomeActivity : HomeActivity() {
 
         fun getDummyFactory(isDarkModeEnabled: Boolean): HomeActivityViewModel.Factory {
             return HomeActivityViewModel.Factory(
-                MutableLiveData("User"),
-                MutableLiveData(
+                { MutableLiveData("User") },
+                { MutableLiveData(
                     Uri.parse(
                         "android.resource://com.giuseppepagliaro.tapevent/drawable/profile"
                     )
-                ),
-                MutableLiveData(
+                ) },
+                { MutableLiveData(
                     listOf(
                         EventInfo(0, "Event 1", Date(), Role.GUEST),
                         EventInfo(1, "Event 2", Date(), Role.GUEST),
@@ -84,7 +102,7 @@ class DummyHomeActivity : HomeActivity() {
                         EventInfo(5, "Event 6", Date(), Role.GUEST),
                         EventInfo(6, "Event 7", Date(), Role.GUEST),
                     )
-                ),
+                ) },
                 {
                     if (isDarkModeEnabled) R.color.eerie_black
                     else R.color.whitesmoke
@@ -97,7 +115,7 @@ class DummyHomeActivity : HomeActivity() {
         }
     }
 
-    override suspend fun getViewModelFactory(): HomeActivityViewModel.Factory {
+    override fun getViewModelFactory(): HomeActivityViewModel.Factory {
         return getDummyFactory(isDarkModeEnabled())
     }
 

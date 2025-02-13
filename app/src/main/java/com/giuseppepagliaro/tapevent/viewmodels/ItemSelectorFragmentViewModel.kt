@@ -7,27 +7,32 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.map
+import androidx.lifecycle.viewModelScope
 import com.giuseppepagliaro.tapevent.models.Selectable
 import com.giuseppepagliaro.tapevent.models.Selected
+import com.giuseppepagliaro.tapevent.models.Transaction
+import com.giuseppepagliaro.tapevent.models.TransactionResult
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
-class ItemSelectorFragmentViewModel(
+open class ItemSelectorFragmentViewModel(
     val selectableTypeName: String,
 
     // La passphrase usata per le operazioni di crypt/decrypt.
-    val getCustomerIdCipherPassphrase: () -> String,
+    val getCustomerIdCipherPassphrase: suspend () -> String,
     // Richiede un nuovo customer ID, che non sarà valido finché non verrà
     // confermato dal richiedente.
-    val requestNewCustomerId: () -> String?,
+    val requestNewCustomerId: suspend () -> String?,
     // Informa la fonte dei customer ID che la scrittura della tag è andata
     // a buon fine e che l'ID può essere confermato.
-    val confirmCustomerId: (id: String) -> Unit,
+    val confirmCustomerId: suspend (id: String) -> Unit,
     // Informa la fonte dei customer ID che si è verificato un errore durante
     // la scrittura della tag e che l'ID va eliminato.
-    val cancelCustomerId: (id: String) -> Unit,
+    val cancelCustomerId: suspend (id: String) -> Unit,
 
-    private val getAvailableLocationsSource: () -> LiveData<List<String>>,
-    private val getSelectable: (location: String) -> List<Selectable>,
-    private val executeTransaction: (clientCode: String, items: List<Selected>) -> Boolean
+    private val getAvailableLocationsSource: suspend () -> LiveData<List<String>>,
+    private val getSelectable: suspend (location: String) -> List<Selectable>,
+    private val executeTransactions: suspend (clientCode: String, items: List<Transaction>) -> TransactionResult
 ) : ViewModel() {
     private val logTag = "ItemSelectorVM"
 
@@ -36,6 +41,7 @@ class ItemSelectorFragmentViewModel(
     private lateinit var _availableLocations: LiveData<List<String>>
     private lateinit var _selectedLocation: MediatorLiveData<String>
     private lateinit var _selectedLocationInd: MutableLiveData<Int>
+    private val _transactionResult: MutableLiveData<TransactionResult> = MutableLiveData()
 
     private var lastSelectedLocation: String? = null
 
@@ -44,12 +50,15 @@ class ItemSelectorFragmentViewModel(
     val selectedLocationInd: LiveData<Int>
     val selectable: LiveData<List<Selectable>>
     val selected: LiveData<List<Selected>>
+    val transactionResult: LiveData<TransactionResult> = _transactionResult
 
     init {
-        initAvailableLocations()
-        initSelectedLocation()
-        initializeSelectable()
-        initializeSelected()
+        runBlocking {
+            initAvailableLocations()
+            initSelectedLocation()
+            initializeSelectable()
+            initializeSelected()
+        }
 
         availableLocations = _availableLocations
         selectedLocation = _selectedLocation
@@ -140,24 +149,33 @@ class ItemSelectorFragmentViewModel(
     fun clearSelected() {
         val selectedLocation = selectedLocation.value ?: return
 
-        _selectable.value = getSelectable(selectedLocation).toMutableList()
-        _selected.value = mutableListOf()
+        viewModelScope.launch {
+            _selectable.value = getSelectable(selectedLocation).toMutableList()
+            _selected.value = mutableListOf()
+        }
     }
 
-    fun finalizeTransaction(clientCode: String): Boolean {
+    fun finalizeTransaction(clientCode: String) {
         val selectedList = selected.value ?: run {
             // Le azioni della UI che chiamano finalizeTransaction dovrebbero essere disabilitate
             // se selectedList è vuota, quindi questo non dovrebbe mai succedere.
             Log.w(logTag, "Tried execute a transaction, but there were no items available.")
 
-            return false
+            _transactionResult.value = TransactionResult.ERROR
+            return
         }
+        val transactions = selectedList.map { Transaction(it.item.name, it.item.currencyName, it.count) }
 
-        if (executeTransaction(clientCode, selectedList)) {
-            clearSelected()
-            return true
+        viewModelScope.launch {
+            when(val result = executeTransactions(clientCode, transactions)) {
+                TransactionResult.ERROR -> { }
+                TransactionResult.INSUFFICIENT_FUNDS -> { _transactionResult.value = result }
+                TransactionResult.OK -> {
+                    clearSelected()
+                    _transactionResult.value = result
+                }
+            }
         }
-        return false
     }
 
     private fun initializeSelectable() {
@@ -167,9 +185,11 @@ class ItemSelectorFragmentViewModel(
             if (location == null) return@addSource
 
             if (location != lastSelectedLocation) {
-                lastSelectedLocation = location
-                _selectable.value = getSelectable(location).toMutableList()
-                _selected.value = mutableListOf()
+                viewModelScope.launch {
+                    lastSelectedLocation = location
+                    _selectable.value = getSelectable(location).toMutableList()
+                    _selected.value = mutableListOf()
+                }
             }
         }
     }
@@ -210,11 +230,11 @@ class ItemSelectorFragmentViewModel(
         }
     }
 
-    private fun initAvailableLocations() {
+    private suspend fun initAvailableLocations() {
         _availableLocations = getAvailableLocationsSource()
     }
 
-    class Factory(
+    open class Factory(
         private val selectableTypeName: String,
         private val getCustomerIdCipherPassphrase: () -> String,
         private val requestNewCustomerId: () -> String?,
@@ -222,7 +242,7 @@ class ItemSelectorFragmentViewModel(
         private val cancelCustomerId: (id: String) -> Unit,
         private val getAvailableLocationsSource: () -> LiveData<List<String>>,
         private val getSelectable: (location: String) -> List<Selectable>,
-        private val executeTransaction: (clientCode: String, items: List<Selected>) -> Boolean
+        private val executeTransaction: (clientCode: String, items: List<Transaction>) -> TransactionResult
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(ItemSelectorFragmentViewModel::class.java)) {
@@ -234,7 +254,8 @@ class ItemSelectorFragmentViewModel(
                     confirmCustomerId,
                     cancelCustomerId,
                     getAvailableLocationsSource,
-                    getSelectable,executeTransaction
+                    getSelectable,
+                    executeTransaction
                 ) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")

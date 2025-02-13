@@ -23,6 +23,7 @@ import androidx.transition.TransitionManager
 import com.giuseppepagliaro.tapevent.adapters.ItemSelectableAdapter
 import com.giuseppepagliaro.tapevent.adapters.ItemSelectedAdapter
 import com.giuseppepagliaro.tapevent.adapters.NoItemsAdapter
+import com.giuseppepagliaro.tapevent.models.TransactionResult
 import com.giuseppepagliaro.tapevent.nfc.NfcAction
 import com.giuseppepagliaro.tapevent.nfc.TapEventNfcProvider
 import com.giuseppepagliaro.tapevent.nfc.NfcView
@@ -40,7 +41,8 @@ abstract class ItemSelectorFragment : Fragment(R.layout.fragment_item_selector),
     private lateinit var rwItemsSelectable: RecyclerView
 
     protected abstract val addsNewCustomers: Boolean
-    protected abstract fun getViewModelFactory(): ItemSelectorFragmentViewModel.Factory
+    protected abstract val viewModelType: Class<out ItemSelectorFragmentViewModel>
+    protected abstract fun getViewModelFactory(): ViewModelProvider.Factory
 
     // L'Intent viene ricevuto dalla Activity e inoltrato al Fragment.
     override fun handleNfcIntent(intent: Intent) = nfcProvider.handle(intent)
@@ -49,8 +51,10 @@ abstract class ItemSelectorFragment : Fragment(R.layout.fragment_item_selector),
         super.onCreate(savedInstanceState)
 
         viewModel = ViewModelProvider(
-            this,
-            getViewModelFactory())[ItemSelectorFragmentViewModel::class.java]
+            requireActivity(),
+            getViewModelFactory()
+        )[viewModelType]
+
         nfcProvider = initNfcProvider()
     }
 
@@ -161,6 +165,22 @@ abstract class ItemSelectorFragment : Fragment(R.layout.fragment_item_selector),
         else {
             btnAddCustomer.visibility = View.GONE
         }
+
+        // Configuro l'OnTransactionResult Toast
+        viewModel.transactionResult.observe(viewLifecycleOwner) { result ->
+            if (result == TransactionResult.OK)
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.item_selector_transaction_success),
+                    Toast.LENGTH_SHORT
+                ).show()
+            else if (result == TransactionResult.INSUFFICIENT_FUNDS)
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.item_selector_transaction_fail),
+                    Toast.LENGTH_SHORT
+                ).show()
+        }
     }
 
     override fun onDestroy() {
@@ -195,7 +215,7 @@ abstract class ItemSelectorFragment : Fragment(R.layout.fragment_item_selector),
     }
 
     // Nfc Write Business Logic.
-    private fun onNfcWriteResult(wasSuccessful: Boolean, customerId: String) {
+    private suspend fun onNfcWriteResult(wasSuccessful: Boolean, customerId: String) {
         if (wasSuccessful)
             viewModel.confirmCustomerId(customerId)
         else

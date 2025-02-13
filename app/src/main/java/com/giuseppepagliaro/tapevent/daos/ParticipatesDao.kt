@@ -12,9 +12,9 @@ interface ParticipatesDao {
     // null -> does not participate; false -> guest; true -> admin
     @Query("SELECT p.isAdmin " +
             "FROM participates AS p " +
-            "WHERE p.user = :userCod AND p.event = :eventCod"
+            "WHERE p.event = :eventCod AND p.user = :userCod"
     )
-    fun getUserParticipationStatus(userCod: Long, eventCod: Long): Boolean?
+    fun getUserParticipationStatus(eventCod: Long, userCod: Long): Boolean?
 
     @Upsert
     fun upsert(participates: Participates)

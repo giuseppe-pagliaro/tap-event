@@ -7,21 +7,28 @@ import androidx.room.Insert
 import androidx.room.Query
 import com.giuseppepagliaro.tapevent.entities.PSells
 import com.giuseppepagliaro.tapevent.entities.Stand
+import com.giuseppepagliaro.tapevent.models.ProductInfo
 
 @Dao
 interface PSellsDao {
-    @Query("SELECT * " +
-            "FROM stand as s " +
-            "WHERE (s.eventCod, s.number) IN (" +
-                "SELECT p.standEventCod, p.standNumber " +
-                "FROM p_sells AS p " +
-                "WHERE p.productEventCod = :eventCod AND p.productNumber = :number" +
-            ")"
+    @Query("SELECT p.name, p.thumbnail, x.ticketName, x.priceTickets " +
+            "FROM product AS p, p_sells AS x " +
+            "WHERE " +
+                "(p.eventCod, p.name) = (x.productEventCod, x.productName) AND " +
+                "(x.standEventCod, x.standName) = (:eventCod, :name)"
     )
-    fun getStandsThatSellsProduct(eventCod: Long, number: Int): LiveData<List<Stand>>
+    fun getByStand(eventCod: Long, name: String): List<ProductInfo>
+
+    @Query("SELECT s.eventCod, s.name " +
+            "FROM stand AS s, p_sells AS x " +
+            "WHERE " +
+                "(s.eventCod, s.name) = (x.standEventCod, x.standName) AND " +
+                "(x.productEventCod, x.productName) = (:eventCod, :name)"
+    )
+    fun getStandsThatSellsProduct(eventCod: Long, name: String): LiveData<List<Stand>>
 
     @Insert
-    fun insert(pSells: PSells)
+    fun insert(pSells: PSells): Long?
 
     @Delete
     fun delete(pSells: PSells)

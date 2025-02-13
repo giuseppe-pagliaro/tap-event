@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.giuseppepagliaro.tapevent.adapters.ItemDisplayableAdapter
+import com.giuseppepagliaro.tapevent.adapters.NoItemsAdapter
 import com.giuseppepagliaro.tapevent.viewmodels.ListActivityViewModel
 
 abstract class ListActivity : AppCompatActivity() {
@@ -30,7 +31,7 @@ abstract class ListActivity : AppCompatActivity() {
         }
 
         val viewModel = ViewModelProvider(
-            this,
+            this@ListActivity,
             getListActivityViewModelFactory()
         )[ListActivityViewModel::class.java]
 
@@ -47,21 +48,32 @@ abstract class ListActivity : AppCompatActivity() {
         tvTitle.text = viewModel.itemsName
 
         // Configura Items Recycle View
-        rwItems.layoutManager = LinearLayoutManager(this)
-        rwItems.adapter = ItemDisplayableAdapter(
-            this,
+        rwItems.layoutManager = LinearLayoutManager(this@ListActivity)
+        val listItemsAdapter = ItemDisplayableAdapter(
+            this@ListActivity,
             listOf()
         )
-        viewModel.items.observe(this) { items ->
-            if (items.isNullOrEmpty()) return@observe
+        val noItemsAdapter = NoItemsAdapter(this, viewModel.itemsName)
+        rwItems.adapter = noItemsAdapter
+        viewModel.items.observe(this@ListActivity) { items ->
+            if (items == null) return@observe
 
-            TransitionManager.beginDelayedTransition(viewRoot, listsTransition)
+            if (items.isEmpty()) {
+                TransitionManager.beginDelayedTransition(viewRoot, listsTransition)
 
-            // Se non ci sono oggetti selezionati,
-            // la recycler view non deve essere mostrata.
-            (rwItems.adapter as ItemDisplayableAdapter).updateItems(items)
+                rwItems.adapter = noItemsAdapter
 
-            viewRoot.requestLayout()
+                viewRoot.requestLayout()
+            } else {
+                TransitionManager.beginDelayedTransition(viewRoot, listsTransition)
+
+                if (rwItems.adapter == noItemsAdapter)
+                    rwItems.adapter = listItemsAdapter
+
+                listItemsAdapter.updateItems(items)
+
+                viewRoot.requestLayout()
+            }
         }
 
         // Configura Button Back

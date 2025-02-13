@@ -23,9 +23,9 @@ interface EventDao {
 
     @Query("SELECT COUNT(*) > 0 " +
             "FROM event AS e " +
-            "WHERE e.owner = :userCod AND e.cod = :eventCod"
+            "WHERE e.cod = :eventCod AND e.owner = :userCod"
     )
-    fun isOwner(userCod: Long, eventCod: Long): Boolean
+    fun isOwner(eventCod: Long, userCod: Long): Boolean
 
     @Insert
     fun insert(event: Event): Long?

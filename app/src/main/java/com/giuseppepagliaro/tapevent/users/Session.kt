@@ -2,6 +2,7 @@ package com.giuseppepagliaro.tapevent.users
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
@@ -15,6 +16,10 @@ import androidx.room.PrimaryKey
             ForeignKey.CASCADE
         )
     ],
+
+    indices = [
+        Index(value = ["user"], unique = false)
+    ]
 )
 data class Session(
     @PrimaryKey

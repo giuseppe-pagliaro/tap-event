@@ -14,9 +14,9 @@ class TapEventNfcProvider(
     private val context: Context,
     private val fragmentManager: FragmentManager,
     private val onNfcReadResult: (String) -> Unit,
-    private val onNfcWriteResult: (Boolean, String) -> Unit,
-    private val getPassphrase: () -> String,
-    private val requestNewCustomerId: () -> String?
+    private val onNfcWriteResult: suspend (Boolean, String) -> Unit,
+    private val getPassphrase: suspend () -> String,
+    private val requestNewCustomerId: suspend () -> String?
 ) {
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     private val nfcFragment = NfcFragment()

@@ -9,17 +9,38 @@ import androidx.lifecycle.viewModelScope
 import com.giuseppepagliaro.tapevent.models.EventInfo
 import com.giuseppepagliaro.tapevent.models.Role
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class HomeActivityViewModel(
-    val username: LiveData<String>,
-    val profilePic: LiveData<Uri>,
-    val events: LiveData<List<EventInfo>>,
+    private val getUsername: suspend () -> LiveData<String>,
+    private val getProfilePic: suspend () -> LiveData<Uri>,
+    private val getEvents: suspend () -> LiveData<List<EventInfo>>,
 
     val getRoleColor: (Role) -> Int,
     private val logoutRequest: suspend () -> Boolean
 ) : ViewModel() {
     private val _logoutEvent: MutableLiveData<Boolean> = MutableLiveData()
+
+    val username: LiveData<String>
+    val profilePic: LiveData<Uri>
+    val events: LiveData<List<EventInfo>>
     val logoutEvent: LiveData<Boolean> = _logoutEvent
+
+    init {
+        val username: LiveData<String>
+        val profilePic: LiveData<Uri>
+        val events: LiveData<List<EventInfo>>
+
+        runBlocking {
+            username = getUsername()
+            profilePic = getProfilePic()
+            events = getEvents()
+        }
+
+        this.username = username
+        this.profilePic = profilePic
+        this.events = events
+    }
 
     fun logout() {
         viewModelScope.launch {
@@ -29,10 +50,9 @@ class HomeActivityViewModel(
     }
 
     class Factory(
-        private val username: LiveData<String>,
-        private val profilePic: LiveData<Uri>,
-        private val events: LiveData<List<EventInfo>>,
-
+        private val getUsername: suspend () -> LiveData<String>,
+        private val getProfilePic: suspend () -> LiveData<Uri>,
+        private val getEvents: suspend () -> LiveData<List<EventInfo>>,
         private val getRoleColor: (Role) -> Int,
         private val logoutRequest: suspend () -> Boolean
     ) : ViewModelProvider.Factory {
@@ -40,9 +60,9 @@ class HomeActivityViewModel(
             if (modelClass.isAssignableFrom(HomeActivityViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
                 return HomeActivityViewModel(
-                    username,
-                    profilePic,
-                    events,
+                    getUsername,
+                    getProfilePic,
+                    getEvents,
                     getRoleColor,
                     logoutRequest
                 ) as T

@@ -25,6 +25,8 @@
     <string name="no_items_available">No %1$s</string>
     <string name="item_selector_title_placeholder">Location Name</string>
     <string name="item_selector_btn_selection_finalize_descriptor">finalize selection</string>
+    <string name="item_selector_transaction_success">Transaction Successful</string>
+    <string name="item_selector_transaction_fail">Transaction Failed, insufficient tickets</string>
     <string name="item_selector_btn_clear_descriptor">clear items</string>
     <string name="item_selector_btn_add_customer_descriptor">Add Customer</string>
     <string name="item_selector_select_one_item">Select at least one item</string>

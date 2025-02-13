@@ -1,5 +1,6 @@
 package com.giuseppepagliaro.tapevent.daos
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -12,12 +13,12 @@ interface StandDao {
     @Query("SELECT * " +
             "FROM stand AS s " +
             "WHERE s.eventCod = :eventCod")
-    fun getAll(eventCod: Long): List<Stand>
+    fun getAll(eventCod: Long): LiveData<List<Stand>>
 
-    @Query("SELECT s.number " +
+    @Query("SELECT s.name " +
             "FROM stand AS s " +
             "WHERE s.eventCod = :eventCod")
-    fun getAllNumbers(eventCod: Long): List<Int>
+    fun getAllNames(eventCod: Long): List<String>
 
     @Insert
     fun insert(stand: Stand): Long?

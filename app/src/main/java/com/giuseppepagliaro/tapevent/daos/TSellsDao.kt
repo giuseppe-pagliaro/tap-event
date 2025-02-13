@@ -7,21 +7,28 @@ import androidx.room.Insert
 import androidx.room.Query
 import com.giuseppepagliaro.tapevent.entities.CashPoint
 import com.giuseppepagliaro.tapevent.entities.TSells
+import com.giuseppepagliaro.tapevent.entities.TicketType
 
 @Dao
 interface TSellsDao {
-    @Query("SELECT * " +
-            "FROM cash_point as c " +
-            "WHERE (c.eventCod, c.number) IN (" +
-                "SELECT t.cashPointEventCod, t.cashPointNumber " +
-                "FROM t_sells AS t " +
-                "WHERE t.ticketTypeEventCod = :eventCod AND t.ticketTypeNumber = :number" +
-            ")"
+    @Query("SELECT t.eventCod, t.name, t.price " +
+            "FROM ticket_type AS t, t_sells AS s " +
+            "WHERE " +
+                "(t.eventCod, t.name) = (s.ticketTypeEventCod, s.ticketTypeName) AND " +
+                "(s.cashPointEventCod, s.cashPointName) = (:eventCod, :name)"
     )
-    fun getCashpointsThatSellsTicket(eventCod: Long, number: Int): LiveData<List<CashPoint>>
+    fun getByCashPoint(eventCod: Long, name: String): List<TicketType>
+
+    @Query("SELECT * " +
+            "FROM cash_point AS c, t_sells AS s " +
+            "WHERE " +
+                "(c.eventCod, c.name) = (s.cashPointEventCod, s.cashPointName) AND " +
+                "(s.ticketTypeEventCod, s.ticketTypeName) = (:eventCod, :name)"
+    )
+    fun getCashPointsThatSellsTicket(eventCod: Long, name: String): LiveData<List<CashPoint>>
 
     @Insert
-    fun insert(tSells: TSells)
+    fun insert(tSells: TSells): Long?
 
     @Delete
     fun delete(tSells: TSells)

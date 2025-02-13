@@ -2,37 +2,41 @@ package com.giuseppepagliaro.tapevent.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 
 @Entity(
     tableName = "owns",
 
     primaryKeys = [
-        "customerEventCod",
-        "customerNumber",
+        "customer",
         "ticketTypeEventCod",
-        "ticketTypeNumber"
+        "ticketTypeName"
     ],
 
     foreignKeys = [
         ForeignKey(
             entity = Customer::class,
-            parentColumns = ["eventCod", "number"],
-            childColumns = ["customerEventCod", "customerNumber"],
+            parentColumns = ["id"],
+            childColumns = ["customer"],
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = TicketType::class,
-            parentColumns = ["eventCod", "number"],
-            childColumns = ["ticketTypeEventCod", "ticketTypeNumber"],
+            parentColumns = ["eventCod", "name"],
+            childColumns = ["ticketTypeEventCod", "ticketTypeName"],
             onDelete = ForeignKey.CASCADE
         )
+    ],
+
+    indices = [
+        Index(value = ["customer"], unique = false),
+        Index(value = ["ticketTypeEventCod", "ticketTypeName"], unique = false)
     ]
 )
 data class Owns(
-    val customerEventCod: Long,
-    val customerNumber: Int,
+    val customer: String,
     val ticketTypeEventCod: Long,
-    val ticketTypeNumber: Int,
+    val ticketTypeName: String,
 
     val count: Int
 )

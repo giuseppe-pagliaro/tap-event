@@ -9,7 +9,6 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.AutoTransition
@@ -20,154 +19,142 @@ import com.giuseppepagliaro.tapevent.nfc.NfcAction
 import com.giuseppepagliaro.tapevent.nfc.TapEventNfcProvider
 import com.giuseppepagliaro.tapevent.nfc.NfcView
 import com.giuseppepagliaro.tapevent.viewmodels.EventFragmentViewModel
-import kotlinx.coroutines.launch
 
 abstract class EventFragment : Fragment(R.layout.fragment_event), NfcView {
     private lateinit var viewModel: EventFragmentViewModel
     private lateinit var nfcProvider: TapEventNfcProvider
 
-    protected abstract suspend fun getViewModelFactory(): EventFragmentViewModel.Factory
+    protected abstract fun getViewModelFactory(): EventFragmentViewModel.Factory
     protected abstract fun putSessionIdIntoIntent(intent: Intent)
 
     override fun handleNfcIntent(intent: Intent) = nfcProvider.handle(intent)
 
-    /*override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // TODO(will need)
-    }*/
+        viewModel = ViewModelProvider(
+            requireActivity(),
+            getViewModelFactory()
+        )[EventFragmentViewModel::class.java]
+
+        nfcProvider = TapEventNfcProvider(
+            requireContext(),
+            parentFragmentManager,
+            this::onNfcReadResult,
+            { _, _ -> throw IllegalStateException("This view does not add customers") },
+            viewModel.getCustomerIdCipherPassphrase,
+            { throw IllegalStateException("This view does not add customers") }
+        )
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val context = requireContext()
-        val owner = this
-        lifecycleScope.launch {
-            viewModel = ViewModelProvider(
-                owner,
-                getViewModelFactory()
-            )[EventFragmentViewModel::class.java]
+        val listsTransition = AutoTransition().apply {
+            duration = 85 // milliseconds
+        }
 
-            nfcProvider = TapEventNfcProvider(
-                requireContext(),
-                parentFragmentManager,
-                owner::onNfcReadResult,
-                { _, _ -> throw IllegalStateException("This view does not add customers") },
-                viewModel.getCustomerIdCipherPassphrase,
-                { throw IllegalStateException("This view does not add customers") }
+        val tvName: TextView = view.findViewById(R.id.tv_event_name)
+        val tvDate: TextView = view.findViewById(R.id.tv_event_date)
+        val btnCheckBalance: Button = view.findViewById(R.id.btn_check_balance)
+        val cardViewTickets: CardView = view.findViewById(R.id.card_view_tickets)
+        val cardViewProducts: CardView = view.findViewById(R.id.card_view_products)
+        val rwViewTickets: RecyclerView = view.findViewById(R.id.rw_event_tickets)
+        val rwViewProducts: RecyclerView = view.findViewById(R.id.rw_event_products)
+
+        fun redrawCardView() {
+            if (view.height == 0) return
+
+            // Riconfiguro l'altezza delle Card View
+            val cardViewsHeight = calculateCardViewHeight(
+                view.height,
+                tvName.height,
+                tvDate.height,
+                btnCheckBalance.height
             )
+            cardViewTickets.layoutParams.height = cardViewsHeight
+            cardViewTickets.requestLayout()
+            cardViewProducts.layoutParams.height = cardViewsHeight
+            cardViewProducts.requestLayout()
+        }
 
-            val listsTransition = AutoTransition().apply {
-                duration = 85 // milliseconds
+        // Assicura che le CardView siano dimensionate dopo l'Inflate
+        // (prima, view.height è 0).
+        view.post {
+            redrawCardView()
+        }
+
+        viewModel.eventInfo.observe(viewLifecycleOwner) { info ->
+            if (info == null) return@observe
+
+            tvName.text = info.name
+            tvDate.text = info.date.toString()
+            redrawCardView()
+        }
+
+        rwViewTickets.layoutManager = LinearLayoutManager(context)
+        val ticketsAdapter = ItemDisplayableAdapter(
+            context,
+            listOf()
+        )
+        val noTicketsAdapter = NoItemsAdapter(context, getString(R.string.event_tickets_title))
+        rwViewTickets.adapter = noTicketsAdapter
+        viewModel.tickets.observe(viewLifecycleOwner) { tickets ->
+            if (tickets == null) return@observe
+
+            if (tickets.isEmpty()) {
+                val viewGroup = cardViewTickets as ViewGroup
+                TransitionManager.beginDelayedTransition(viewGroup, listsTransition)
+
+                rwViewTickets.adapter = noTicketsAdapter
+
+                viewGroup.requestLayout()
+            } else {
+                val viewGroup = cardViewTickets as ViewGroup
+                TransitionManager.beginDelayedTransition(viewGroup, listsTransition)
+
+                if (rwViewTickets.adapter == noTicketsAdapter)
+                    rwViewTickets.adapter = ticketsAdapter
+
+                ticketsAdapter.updateItems(tickets)
+
+                viewGroup.requestLayout()
             }
+        }
 
-            val tvName: TextView = view.findViewById(R.id.tv_event_name)
-            val tvDate: TextView = view.findViewById(R.id.tv_event_date)
-            val btnCheckBalance: Button = view.findViewById(R.id.btn_check_balance)
-            val cardViewTickets: CardView = view.findViewById(R.id.card_view_tickets)
-            val cardViewProducts: CardView = view.findViewById(R.id.card_view_products)
-            val rwViewTickets: RecyclerView = view.findViewById(R.id.rw_event_tickets)
-            val rwViewProducts: RecyclerView = view.findViewById(R.id.rw_event_products)
+        rwViewProducts.layoutManager = LinearLayoutManager(context)
+        val productsAdapter = ItemDisplayableAdapter(
+            context,
+            listOf()
+        )
+        val noProductsAdapter = NoItemsAdapter(context, getString(R.string.event_products_title))
+        rwViewProducts.adapter = noProductsAdapter
+        viewModel.products.observe(viewLifecycleOwner) { products ->
+            if (products == null) return@observe
 
-            fun redrawCardView() {
-                if (view.height == 0) return
+            if (products.isEmpty()) {
+                val viewGroup = cardViewProducts as ViewGroup
+                TransitionManager.beginDelayedTransition(viewGroup, listsTransition)
 
-                // Riconfiguro l'altezza delle Card View
-                val cardViewsHeight = calculateCardViewHeight(
-                    view.height,
-                    tvName.height,
-                    tvDate.height,
-                    btnCheckBalance.height
-                )
-                cardViewTickets.layoutParams.height = cardViewsHeight
-                cardViewTickets.requestLayout()
-                cardViewProducts.layoutParams.height = cardViewsHeight
-                cardViewProducts.requestLayout()
+                rwViewProducts.adapter = noProductsAdapter
+
+                viewGroup.requestLayout()
+            } else {
+                val viewGroup = cardViewProducts as ViewGroup
+                TransitionManager.beginDelayedTransition(viewGroup, listsTransition)
+
+                if (rwViewProducts.adapter == noProductsAdapter)
+                    rwViewProducts.adapter = productsAdapter
+
+                productsAdapter.updateItems(products)
+
+                viewGroup.requestLayout()
             }
+        }
 
-            // Assicura che le CardView siano dimensionate dopo l'Inflate
-            // (prima, view.height è 0).
-            view.post {
-                redrawCardView()
-            }
-
-            viewModel.name.observe(viewLifecycleOwner) { name ->
-                if (name.isNullOrEmpty()) return@observe
-
-                tvName.text = name
-                redrawCardView()
-            }
-
-            viewModel.date.observe(viewLifecycleOwner) { date ->
-                if (date == null) return@observe
-
-                tvDate.text = date.toString()
-                redrawCardView()
-            }
-
-            rwViewTickets.layoutManager = LinearLayoutManager(context)
-            val ticketsAdapter = ItemDisplayableAdapter(
-                context,
-                listOf()
-            )
-            val noTicketsAdapter = NoItemsAdapter(context, getString(R.string.event_tickets_title))
-            rwViewTickets.adapter = noTicketsAdapter
-            viewModel.tickets.observe(viewLifecycleOwner) { tickets ->
-                if (tickets == null) return@observe
-
-                if (tickets.isEmpty()) {
-                    val viewGroup = cardViewTickets as ViewGroup
-                    TransitionManager.beginDelayedTransition(viewGroup, listsTransition)
-
-                    rwViewTickets.adapter = noTicketsAdapter
-
-                    viewGroup.requestLayout()
-                } else {
-                    val viewGroup = cardViewTickets as ViewGroup
-                    TransitionManager.beginDelayedTransition(viewGroup, listsTransition)
-
-                    if (rwViewTickets.adapter == noTicketsAdapter)
-                        rwViewTickets.adapter = ticketsAdapter
-
-                    ticketsAdapter.updateItems(tickets)
-
-                    viewGroup.requestLayout()
-                }
-            }
-
-            rwViewProducts.layoutManager = LinearLayoutManager(context)
-            val productsAdapter = ItemDisplayableAdapter(
-                context,
-                listOf()
-            )
-            val noProductsAdapter = NoItemsAdapter(context, getString(R.string.event_products_title))
-            rwViewProducts.adapter = noProductsAdapter
-            viewModel.products.observe(viewLifecycleOwner) { products ->
-                if (products == null) return@observe
-
-                if (products.isEmpty()) {
-                    val viewGroup = cardViewProducts as ViewGroup
-                    TransitionManager.beginDelayedTransition(viewGroup, listsTransition)
-
-                    rwViewProducts.adapter = noProductsAdapter
-
-                    viewGroup.requestLayout()
-                } else {
-                    val viewGroup = cardViewProducts as ViewGroup
-                    TransitionManager.beginDelayedTransition(viewGroup, listsTransition)
-
-                    if (rwViewProducts.adapter == noProductsAdapter)
-                        rwViewProducts.adapter = productsAdapter
-
-                    productsAdapter.updateItems(products)
-
-                    viewGroup.requestLayout()
-                }
-            }
-
-            btnCheckBalance.setOnClickListener {
-                nfcProvider.request(NfcAction.READ)
-            }
+        btnCheckBalance.setOnClickListener {
+            nfcProvider.request(NfcAction.READ)
         }
     }
 
