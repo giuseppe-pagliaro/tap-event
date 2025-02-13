@@ -12,9 +12,12 @@ import com.giuseppepagliaro.tapevent.entities.CashPoint
 interface CpManagesDao {
     @Query("SELECT c.eventCod, c.name " +
             "FROM cash_point AS c, cp_manages AS x " +
-            "WHERE (c.eventCod, c.name) = (x.eventCod, x.cashPointName) AND x.user = :userCod"
+            "WHERE " +
+                "(c.eventCod, c.name) = (x.eventCod, x.cashPointName) AND " +
+                "x.eventCod = :eventCod AND " +
+                "x.user = :userCod"
     )
-    fun getCashPointsManagedByUser(userCod: Long): LiveData<List<CashPoint>>
+    fun getCashPointsManagedByUser(eventCod: Long, userCod: Long): LiveData<List<CashPoint>>
 
     @Query("SELECT EXISTS(" +
             "SELECT * " +

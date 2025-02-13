@@ -77,9 +77,15 @@ class EventActivity : AppCompatActivity() {
             when(role) {
                 Role.GUEST -> navbar.visibility = View.GONE
 
-                Role.CASHIER -> navbar.inflateMenu(R.menu.event_bottom_navigation_cashier)
+                Role.CASHIER -> {
+                    navbar.menu.clear()
+                    navbar.inflateMenu(R.menu.event_bottom_navigation_cashier)
+                }
 
-                Role.STAND_KEEPER -> navbar.inflateMenu(R.menu.event_bottom_navigation_standkeeper)
+                Role.STANDKEEPER -> {
+                    navbar.menu.clear()
+                    navbar.inflateMenu(R.menu.event_bottom_navigation_standkeeper)
+                }
 
                 else -> {}
             }

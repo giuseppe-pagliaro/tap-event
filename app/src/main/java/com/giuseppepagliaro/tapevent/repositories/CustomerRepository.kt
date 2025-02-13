@@ -79,7 +79,7 @@ class CustomerRepository(
         withContext(Dispatchers.IO) {
             val role = eventsRepository.getUserRole(sessionId, eventCod)
 
-            if (role !in listOf(Role.OWNER, Role.ORGANIZER, Role.MULTI_TASKER, Role.CASHIER)) {
+            if (role !in listOf(Role.OWNER, Role.ORGANIZER, Role.MULTITASKER, Role.CASHIER)) {
 
                 // Non si dispone dei permessi necessari.
                 customerId = null
@@ -102,7 +102,7 @@ class CustomerRepository(
         withContext(Dispatchers.IO) {
             val role = eventsRepository.getUserRole(sessionId, eventCod)
 
-            if (role !in listOf(Role.OWNER, Role.ORGANIZER, Role.MULTI_TASKER, Role.CASHIER)) {
+            if (role !in listOf(Role.OWNER, Role.ORGANIZER, Role.MULTITASKER, Role.CASHIER)) {
 
                 // Non si dispone dei permessi necessari.
                 return@withContext
@@ -116,7 +116,7 @@ class CustomerRepository(
         withContext(Dispatchers.IO) {
             val role = eventsRepository.getUserRole(sessionId, eventCod)
 
-            if (role !in listOf(Role.OWNER, Role.ORGANIZER, Role.MULTI_TASKER, Role.CASHIER)) {
+            if (role !in listOf(Role.OWNER, Role.ORGANIZER, Role.MULTITASKER, Role.CASHIER)) {
 
                 // Non si dispone dei permessi necessari.
                 return@withContext

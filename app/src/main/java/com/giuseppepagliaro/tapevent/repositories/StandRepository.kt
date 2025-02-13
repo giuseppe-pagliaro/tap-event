@@ -34,14 +34,14 @@ class StandRepository(
                     // Dovrebbero ottenere tutti i CashPoint.
                     stands = database.stands().getAll(eventCod)
                 }
-                Role.MULTI_TASKER, Role.STAND_KEEPER -> {
+                Role.MULTITASKER, Role.STANDKEEPER -> {
                     // Dovrebbero ottenere solo i CashPoint a cui sono assegnati.
                     val userCod = database.sessions().getInternalCodBySession(sessionId) ?: run {
                         stands = null
                         return@withContext
                     }
 
-                    stands = database.sManages().getStandsManagedByUser(userCod)
+                    stands = database.sManages().getStandsManagedByUser(eventCod, userCod)
                 }
                 Role.CASHIER, Role.GUEST, null -> {
                     // Non possono richiedere CashPoint.

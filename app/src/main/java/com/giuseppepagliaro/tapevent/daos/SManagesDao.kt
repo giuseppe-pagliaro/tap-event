@@ -12,9 +12,12 @@ import com.giuseppepagliaro.tapevent.entities.Stand
 interface SManagesDao {
     @Query("SELECT s.eventCod, s.name " +
             "FROM stand AS s, s_manages AS x " +
-            "WHERE (s.eventCod, s.name) = (x.eventCod, x.standName) AND x.user = :userCod"
+            "WHERE " +
+                "(s.eventCod, s.name) = (x.eventCod, x.standName) AND " +
+                "x.eventCod = :eventCod AND " +
+                "x.user = :userCod"
     )
-    fun getStandsManagedByUser(userCod: Long): LiveData<List<Stand>>
+    fun getStandsManagedByUser(eventCod: Long, userCod: Long): LiveData<List<Stand>>
 
     @Query("SELECT EXISTS(" +
             "SELECT * " +

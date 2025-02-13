@@ -10,8 +10,8 @@ abstract class Selectable(
     val name: String,
     @Ignore
     val currencyName: String,
-    @Ignore
-    val thumbnailUri: String? = null
+
+    var thumbnailUri: String? = null
 ) {
     val thumbnail: Uri
         get() = Uri.parse(thumbnailUri ?: Product.DEFAULT_THUMBNAIL_URL)

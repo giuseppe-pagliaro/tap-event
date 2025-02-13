@@ -262,7 +262,7 @@ class EventsRepository(
                                 /* Se un utente gestisce già la location, ignora. */
                             }
                     }
-                    Role.MULTI_TASKER -> {
+                    Role.MULTITASKER -> {
 
                         // MULTI_TASKER è un ruolo "di servizio" che serve a rappresentare un
                         // utente assegnato a qualche cassa e qualche stand, ma che non sia ORGANIZER.
@@ -270,7 +270,7 @@ class EventsRepository(
                         result = false
                         return@withContext
                     }
-                    Role.STAND_KEEPER -> {
+                    Role.STANDKEEPER -> {
                         val stands =
                             if (locationNames.isNullOrEmpty())
                                 database.stands().getAllNames(eventCod)
@@ -329,13 +329,13 @@ class EventsRepository(
         withContext(Dispatchers.IO) {
             if (database.cpManages().isCashier(eventCod, userCod)) {
                 if (database.sManages().isStander(eventCod, userCod)) {
-                    role = Role.MULTI_TASKER
+                    role = Role.MULTITASKER
                     return@withContext
                 }
                 role = Role.CASHIER
             } else {
                 if (database.sManages().isStander(eventCod, userCod)) {
-                    role = Role.STAND_KEEPER
+                    role = Role.STANDKEEPER
                     return@withContext
                 }
                 role = null

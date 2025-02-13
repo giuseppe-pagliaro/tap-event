@@ -33,16 +33,16 @@ class CashPointRepository(
                     // Dovrebbero ottenere tutti i CashPoint.
                     cashPoints = database.cashPoints().getAll(eventCod)
                 }
-                Role.MULTI_TASKER, Role.CASHIER -> {
+                Role.MULTITASKER, Role.CASHIER -> {
                     // Dovrebbero ottenere solo i CashPoint a cui sono assegnati.
                     val userCod = database.sessions().getInternalCodBySession(sessionId) ?: run {
                         cashPoints = null
                         return@withContext
                     }
 
-                    cashPoints = database.cpManages().getCashPointsManagedByUser(userCod)
+                    cashPoints = database.cpManages().getCashPointsManagedByUser(eventCod, userCod)
                 }
-                Role.STAND_KEEPER, Role.GUEST, null -> {
+                Role.STANDKEEPER, Role.GUEST, null -> {
                     // Non possono richiedere CashPoint.
                     cashPoints = null
                 }
@@ -67,7 +67,7 @@ class CashPointRepository(
         val tickets: List<TicketType>?
         withContext(Dispatchers.IO) {
             val role = eventsRepository.getUserRole(sessionId, eventCod)
-            if (role in listOf(Role.STAND_KEEPER, Role.GUEST)) {
+            if (role in listOf(Role.STANDKEEPER, Role.GUEST)) {
                 tickets = null
                 return@withContext
             }
@@ -86,7 +86,7 @@ class CashPointRepository(
         var result: TransactionResult
         withContext(Dispatchers.IO) {
             val role = eventsRepository.getUserRole(sessionId, eventCod)
-            if (role in listOf(Role.STAND_KEEPER, Role.GUEST)) {
+            if (role in listOf(Role.STANDKEEPER, Role.GUEST)) {
                 result = TransactionResult.ERROR
                 return@withContext
             }

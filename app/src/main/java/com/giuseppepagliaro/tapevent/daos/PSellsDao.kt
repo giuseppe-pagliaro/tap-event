@@ -11,7 +11,7 @@ import com.giuseppepagliaro.tapevent.models.ProductInfo
 
 @Dao
 interface PSellsDao {
-    @Query("SELECT p.name, p.thumbnail, x.ticketName, x.priceTickets " +
+    @Query("SELECT p.name, p.thumbnail AS thumbnailUri, x.ticketName, x.priceTickets " +
             "FROM product AS p, p_sells AS x " +
             "WHERE " +
                 "(p.eventCod, p.name) = (x.productEventCod, x.productName) AND " +

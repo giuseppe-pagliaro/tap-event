@@ -127,13 +127,15 @@ abstract class TapEventDatabase : RoomDatabase() {
 
             // Aggiungo User
 
-            var success = userRepository.add("Giuseppe Pagliaro", "pass")
+            val usersPropicUri = "android.resource://com.giuseppepagliaro.tapevent/drawable/display_user_"
+
+            var success = userRepository.add("Giuseppe Pagliaro", "pass", Uri.parse(usersPropicUri + "giuseppe_pagliaro"))
             Log.d("DB Prepopulate", "Created Giuseppe Pagliaro: $success")
-            success = userRepository.add("Giovanni Verdi", "pass")
+            success = userRepository.add("Giovanni Verdi", "pass", Uri.parse(usersPropicUri + "giovanni_verdi"))
             Log.d("DB Prepopulate", "Created Giovanni Verdi: $success")
-            success = userRepository.add("Malcom Smith", "pass")
+            success = userRepository.add("Malcom Smith", "pass", Uri.parse(usersPropicUri + "malcom_smith"))
             Log.d("DB Prepopulate", "Created Malcom Smith: $success")
-            success = userRepository.add("Alberto Toscano", "pass")
+            success = userRepository.add("Alberto Toscano", "pass", Uri.parse(usersPropicUri + "alberto_toscano"))
             Log.d("DB Prepopulate", "Created Alberto Toscano: $success")
             success = userRepository.add("KIOSK", "pass")
             Log.d("DB Prepopulate", "Created KIOSK: $success")
@@ -228,57 +230,60 @@ abstract class TapEventDatabase : RoomDatabase() {
 
             // Aggiungo Prodotti
 
-            success = vinoStandRepository.addProduct(giuseppeSessionId, "Bicchiere di Rosso del Savuto", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            val vinoBaseUrl = "android.resource://com.giuseppepagliaro.tapevent/drawable/display_festa_vino_"
+            val paneBaseUrl = "android.resource://com.giuseppepagliaro.tapevent/drawable/display_festa_pane_"
+
+            success = vinoStandRepository.addProduct(giuseppeSessionId, "Bicchiere di Rosso del Savuto", Uri.parse(vinoBaseUrl + "bicchiere_rosso_savuto"))
             Log.d("DB Prepopulate", "Added \"Bicchiere di Rosso del Savuto\" in Event $vinoEventCod by \"Giuseppe Pagliaro\": $success")
-            success = vinoStandRepository.addProduct(giuseppeSessionId, "Bicchiere di Rosso di Cirò", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = vinoStandRepository.addProduct(giuseppeSessionId, "Bicchiere di Rosso di Cirò", Uri.parse(vinoBaseUrl + "bicchiere_rosso_ciro"))
             Log.d("DB Prepopulate", "Added \"Bicchiere di Rosso di Cirò\" in Event $vinoEventCod by \"Giuseppe Pagliaro\": $success")
-            success = vinoStandRepository.addProduct(giuseppeSessionId, "Bicchiere di Bianco del Savuto", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = vinoStandRepository.addProduct(giuseppeSessionId, "Bicchiere di Bianco del Savuto", Uri.parse(vinoBaseUrl + "bicchiere_bianco_savuto"))
             Log.d("DB Prepopulate", "Added \"Bicchiere di Bianco del Savuto\" in Event $vinoEventCod by \"Giuseppe Pagliaro\": $success")
-            success = vinoStandRepository.addProduct(giuseppeSessionId, "Bicchiere di Bianco di Cirò", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = vinoStandRepository.addProduct(giuseppeSessionId, "Bicchiere di Bianco di Cirò", Uri.parse(vinoBaseUrl + "bicchiere_bianco_ciro"))
             Log.d("DB Prepopulate", "Added \"Bicchiere di Bianco di Cirò\" in Event $vinoEventCod by \"Giuseppe Pagliaro\": $success")
-            success = vinoStandRepository.addProduct(giuseppeSessionId, "Caraffa (1L) di Rosso di Cirò", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = vinoStandRepository.addProduct(giuseppeSessionId, "Caraffa (1L) di Rosso di Cirò", Uri.parse(vinoBaseUrl + "caraffa_rosso_ciro"))
             Log.d("DB Prepopulate", "Added \"Caraffa (1L) di Rosso di Cirò\" in Event $vinoEventCod by \"Giuseppe Pagliaro\": $success")
-            success = vinoStandRepository.addProduct(giuseppeSessionId, "Caraffa (1L) di Bianco di Cirò", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = vinoStandRepository.addProduct(giuseppeSessionId, "Caraffa (1L) di Bianco di Cirò", Uri.parse(vinoBaseUrl + "caraffa_bianco_ciro"))
             Log.d("DB Prepopulate", "Added \"Caraffa (1L) di Bianco di Cirò\" in Event $vinoEventCod by \"Giuseppe Pagliaro\": $success")
-            success = vinoStandRepository.addProduct(giuseppeSessionId, "Bicchiere di Rosato", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = vinoStandRepository.addProduct(giuseppeSessionId, "Bicchiere di Rosato", Uri.parse(vinoBaseUrl + "bicchiere_rosato"))
             Log.d("DB Prepopulate", "Added \"Bicchiere di Rosato\" in Event $vinoEventCod by \"Giuseppe Pagliaro\": $success")
-            success = vinoStandRepository.addProduct(giuseppeSessionId, "Caraffa (1L) di Rosato", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = vinoStandRepository.addProduct(giuseppeSessionId, "Caraffa (1L) di Rosato", Uri.parse(vinoBaseUrl + "caraffa_rosato"))
             Log.d("DB Prepopulate", "Added \"Caraffa (1L) di Rosato\" in Event $vinoEventCod by \"Giuseppe Pagliaro\": $success")
-            success = vinoStandRepository.addProduct(giuseppeSessionId, "Bicchiere di Champagne", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = vinoStandRepository.addProduct(giuseppeSessionId, "Bicchiere di Champagne", Uri.parse(vinoBaseUrl + "bicchiere_champagne"))
             Log.d("DB Prepopulate", "Added \"Bicchiere di Champagne\" in Event $vinoEventCod by \"Giuseppe Pagliaro\": $success")
-            success = vinoStandRepository.addProduct(giuseppeSessionId, "Bottiglia di Champagne", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = vinoStandRepository.addProduct(giuseppeSessionId, "Bottiglia di Champagne", Uri.parse(vinoBaseUrl + "bottiglia_champagne"))
             Log.d("DB Prepopulate", "Added \"Bottiglia di Champagne\" in Event $vinoEventCod by \"Giuseppe Pagliaro\": $success")
-            success = vinoStandRepository.addProduct(giuseppeSessionId, "Menu: Panino + Bicchiere di Vino", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = vinoStandRepository.addProduct(giuseppeSessionId, "Menu: Panino + Bicchiere di Vino", Uri.parse(vinoBaseUrl + "menu_panino_vino"))
             Log.d("DB Prepopulate", "Added \"Menu: Panino + Bicchiere di Vino\" in Event $vinoEventCod by \"Giuseppe Pagliaro\": $success")
-            success = vinoStandRepository.addProduct(giuseppeSessionId, "Pasta", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = vinoStandRepository.addProduct(giuseppeSessionId, "Pasta", Uri.parse(vinoBaseUrl + "pasta"))
             Log.d("DB Prepopulate", "Added \"Pasta\" in Event $vinoEventCod by \"Giuseppe Pagliaro\": $success")
-            success = vinoStandRepository.addProduct(giuseppeSessionId, "Panino", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = vinoStandRepository.addProduct(giuseppeSessionId, "Panino", Uri.parse(vinoBaseUrl + "panino"))
             Log.d("DB Prepopulate", "Added \"Panino\" in Event $vinoEventCod by \"Giuseppe Pagliaro\": $success")
-            success = vinoStandRepository.addProduct(giuseppeSessionId, "Arancino", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = vinoStandRepository.addProduct(giuseppeSessionId, "Arancino", Uri.parse(vinoBaseUrl + "arancino"))
             Log.d("DB Prepopulate", "Added \"Arancino\" in Event $vinoEventCod by \"Giuseppe Pagliaro\": $success")
-            success = vinoStandRepository.addProduct(giuseppeSessionId, "Spiedini", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = vinoStandRepository.addProduct(giuseppeSessionId, "Spiedini", Uri.parse(vinoBaseUrl + "spiedini"))
             Log.d("DB Prepopulate", "Added \"Spiedini\" in Event $vinoEventCod by \"Giuseppe Pagliaro\": $success")
-            success = vinoStandRepository.addProduct(giuseppeSessionId, "Menu: Rosticceria x 3 Persone", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = vinoStandRepository.addProduct(giuseppeSessionId, "Menu: Rosticceria x 3 Persone", Uri.parse(vinoBaseUrl + "menu_rosticceria"))
             Log.d("DB Prepopulate", "Added \"Menu: Rosticceria x 3 Persone\" in Event $vinoEventCod by \"Giuseppe Pagliaro\": $success")
-            success = vinoStandRepository.addProduct(giuseppeSessionId, "Cartoccio di Cardarroste", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = vinoStandRepository.addProduct(giuseppeSessionId, "Cartoccio di Cardarroste", Uri.parse(vinoBaseUrl + "cardarroste"))
             Log.d("DB Prepopulate", "Added \"Cartoccio di Cardarroste\" in Event $vinoEventCod by \"Giuseppe Pagliaro\": $success")
-            success = vinoStandRepository.addProduct(giuseppeSessionId, "Pitta con Trippa", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = vinoStandRepository.addProduct(giuseppeSessionId, "Pitta con Trippa", Uri.parse(vinoBaseUrl + "pitta_trippa"))
             Log.d("DB Prepopulate", "Added \"Pitta con Trippa\" in Event $vinoEventCod by \"Giuseppe Pagliaro\": $success")
-            success = paneStandRepository.addProduct(giovanniSessionId, "Pane e Olio", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = paneStandRepository.addProduct(giovanniSessionId, "Pane e Olio", Uri.parse(paneBaseUrl + "pane_olio"))
             Log.d("DB Prepopulate", "Added \"Pane e Olio\" in Event $paneEventCod by \"Giovanni Verdi\": $success")
-            success = paneStandRepository.addProduct(giovanniSessionId, "Degustazione di Pane e Crostini", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = paneStandRepository.addProduct(giovanniSessionId, "Degustazione di Pane e Crostini", Uri.parse(paneBaseUrl + "degustazione_pane_crostini"))
             Log.d("DB Prepopulate", "Added \"Degustazione di Pane e Crostini\" in Event $paneEventCod by \"Giovanni Verdi\": $success")
-            success = paneStandRepository.addProduct(giovanniSessionId, "Focaccia", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = paneStandRepository.addProduct(giovanniSessionId, "Focaccia", Uri.parse(paneBaseUrl + "focaccia"))
             Log.d("DB Prepopulate", "Added \"Focaccia\" in Event $paneEventCod by \"Giovanni Verdi\": $success")
-            success = paneStandRepository.addProduct(giovanniSessionId, "Pitta", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = paneStandRepository.addProduct(giovanniSessionId, "Pitta", Uri.parse(paneBaseUrl + "pitta"))
             Log.d("DB Prepopulate", "Added \"Pitta\" in Event $paneEventCod by \"Giovanni Verdi\": $success")
-            success = paneStandRepository.addProduct(giovanniSessionId, "Pane Integrale", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = paneStandRepository.addProduct(giovanniSessionId, "Pane Integrale", Uri.parse(paneBaseUrl + "pane_integrale"))
             Log.d("DB Prepopulate", "Added \"Pane Integrale\" in Event $paneEventCod by \"Giovanni Verdi\": $success")
-            success = paneStandRepository.addProduct(giovanniSessionId, "Birra", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = paneStandRepository.addProduct(giovanniSessionId, "Birra", Uri.parse(paneBaseUrl + "birra"))
             Log.d("DB Prepopulate", "Added \"Birra\" in Event $paneEventCod by \"Giovanni Verdi\": $success")
-            success = paneStandRepository.addProduct(giovanniSessionId, "Coca Cola", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = paneStandRepository.addProduct(giovanniSessionId, "Coca Cola", Uri.parse(paneBaseUrl + "coca_cola"))
             Log.d("DB Prepopulate", "Added \"Coca Cola\" in Event $paneEventCod by \"Giovanni Verdi\": $success")
-            success = paneStandRepository.addProduct(giovanniSessionId, "Acqua", Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO thumbnail
+            success = paneStandRepository.addProduct(giovanniSessionId, "Acqua", Uri.parse(paneBaseUrl + "acqua"))
             Log.d("DB Prepopulate", "Added \"Acqua\" in Event $paneEventCod by \"Giovanni Verdi\": $success")
 
             // Associo i Prodotti agli Stand
@@ -340,15 +345,15 @@ abstract class TapEventDatabase : RoomDatabase() {
 
             success = eventsRepository.grantRole(giuseppeSessionId, vinoEventCod, "Malcom Smith", Role.CASHIER)
             Log.d("DB Prepopulate", "Role.CASHIER granted to Malcom Smith by Giuseppe Pagliaro in Event $vinoEventCod, success: $success")
-            success = eventsRepository.grantRole(giuseppeSessionId, vinoEventCod, "Malcom Smith", Role.STAND_KEEPER, listOf("Stand Vino Rosso", "Stand Vino Bianco"))
+            success = eventsRepository.grantRole(giuseppeSessionId, vinoEventCod, "Malcom Smith", Role.STANDKEEPER, listOf("Stand Vino Rosso", "Stand Vino Bianco"))
             Log.d("DB Prepopulate", "Role.STAND_KEEPER(Stand Vino Rosso, Stand Vino Bianco) granted to Malcom Smith by Giuseppe Pagliaro in Event $vinoEventCod, success: $success")
-            success = eventsRepository.grantRole(giuseppeSessionId, vinoEventCod, "Alberto Toscano", Role.STAND_KEEPER, listOf("Stand Food"))
+            success = eventsRepository.grantRole(giuseppeSessionId, vinoEventCod, "Alberto Toscano", Role.STANDKEEPER, listOf("Stand Food"))
             Log.d("DB Prepopulate", "Role.STAND_KEEPER(Stand Food) granted to Alberto Toscano by Giuseppe Pagliaro in Event $vinoEventCod, success: $success")
-            success = eventsRepository.grantRole(giovanniSessionId, paneEventCod, "Malcom Smith", Role.STAND_KEEPER, listOf("Stand Bevande"))
+            success = eventsRepository.grantRole(giovanniSessionId, paneEventCod, "Malcom Smith", Role.STANDKEEPER, listOf("Stand Bevande"))
             Log.d("DB Prepopulate", "Role.STAND_KEEPER(Stand Bevande) granted to Malcom Smith by Giovanni Verdi in Event $paneEventCod, success: $success")
             success = eventsRepository.grantRole(giovanniSessionId, paneEventCod, "Malcom Smith", Role.CASHIER, listOf("Cassa"))
             Log.d("DB Prepopulate", "Role.CASHIER(Cassa) granted to Malcom Smith by Giovanni Verdi in Event $paneEventCod, success: $success")
-            success = eventsRepository.grantRole(giovanniSessionId, paneEventCod, "Alberto Toscano", Role.STAND_KEEPER, listOf("Stand Pane"))
+            success = eventsRepository.grantRole(giovanniSessionId, paneEventCod, "Alberto Toscano", Role.STANDKEEPER, listOf("Stand Pane"))
             Log.d("DB Prepopulate", "Role.STAND_KEEPER(Stand Pane) granted to Alberto Toscano by Giovanni Verdi in Event $paneEventCod, success: $success")
 
             // Logout
