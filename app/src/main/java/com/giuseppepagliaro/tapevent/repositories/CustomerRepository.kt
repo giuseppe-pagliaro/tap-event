@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.giuseppepagliaro.tapevent.TapEventDatabase
 import com.giuseppepagliaro.tapevent.entities.Customer
-import com.giuseppepagliaro.tapevent.entities.Product
+import com.giuseppepagliaro.tapevent.entities.TicketType
 import com.giuseppepagliaro.tapevent.models.Displayable
 import com.giuseppepagliaro.tapevent.models.Role
 import com.giuseppepagliaro.tapevent.models.TicketCount
@@ -151,7 +151,7 @@ class CustomerRepository(
                         Displayable(
                             if (own.count > 1) "${own.name} x ${own.count}" else own.name,
                             listOf(),
-                            Uri.parse(Product.DEFAULT_THUMBNAIL_URL)  // TODO(ticket thumbnail provider)
+                            Uri.parse(TicketType.TICKET_THUMBNAIL_URL)
                         )
                     }
 

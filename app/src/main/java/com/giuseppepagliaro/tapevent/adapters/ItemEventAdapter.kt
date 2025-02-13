@@ -43,7 +43,7 @@ class ItemEventAdapter(
         val event = events[position]
 
         holder.ivTitle.text = event.name
-        holder.ivDate.text = event.date.toString()
+        holder.ivDate.text = event.getDate(context)
         holder.ivRole.text = event.userRole.name.lowercase().replaceFirstChar {
             if (it.isLowerCase()) it.titlecase(
                 Locale.ROOT

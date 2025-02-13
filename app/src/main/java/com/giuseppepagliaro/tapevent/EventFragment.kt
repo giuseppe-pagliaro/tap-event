@@ -89,7 +89,7 @@ abstract class EventFragment : Fragment(R.layout.fragment_event), NfcView {
             if (info == null) return@observe
 
             tvName.text = info.name
-            tvDate.text = info.date.toString()
+            tvDate.text = info.getDate(context)
             redrawCardView()
         }
 

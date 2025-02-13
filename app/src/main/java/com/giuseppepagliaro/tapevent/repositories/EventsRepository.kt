@@ -100,7 +100,7 @@ class EventsRepository(
 
                     // Popolo la lista con un valore di SoldIn temporaneo.
                     ret = items.map { ticket ->
-                        Displayable(ticket.name, listOf(), Uri.parse(Product.DEFAULT_THUMBNAIL_URL)) // TODO(ticket thumbnail provider)
+                        Displayable(ticket.name, listOf(), Uri.parse(TicketType.TICKET_THUMBNAIL_URL))
                     }
 
                     // Per ogni ticket, eseguo la query per ottenere la SoldIn List.

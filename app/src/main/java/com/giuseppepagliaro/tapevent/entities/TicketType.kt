@@ -26,4 +26,8 @@ data class TicketType(
     val eventCod: Long,
     val name: String,
     val price: Float
-)
+) {
+    companion object {
+        const val TICKET_THUMBNAIL_URL = "android.resource://com.giuseppepagliaro.tapevent/drawable/avd_ticket"
+    }
+}
