@@ -41,7 +41,7 @@ open class ItemSelectorFragmentViewModel(
     private lateinit var _availableLocations: LiveData<List<String>>
     private lateinit var _selectedLocation: MediatorLiveData<String>
     private lateinit var _selectedLocationInd: MutableLiveData<Int>
-    private val _transactionResult: MutableLiveData<TransactionResult> = MutableLiveData()
+    private val _transactionResult: MutableLiveData<TransactionResult?> = MutableLiveData()
 
     private var lastSelectedLocation: String? = null
 
@@ -50,7 +50,7 @@ open class ItemSelectorFragmentViewModel(
     val selectedLocationInd: LiveData<Int>
     val selectable: LiveData<List<Selectable>>
     val selected: LiveData<List<Selected>>
-    val transactionResult: LiveData<TransactionResult> = _transactionResult
+    val transactionResult: LiveData<TransactionResult?> = _transactionResult
 
     init {
         runBlocking {
@@ -164,7 +164,7 @@ open class ItemSelectorFragmentViewModel(
             _transactionResult.value = TransactionResult.ERROR
             return
         }
-        val transactions = selectedList.map { Transaction(it.item.name, it.item.currencyName, it.count) }
+        val transactions = selectedList.map { Transaction(it.item.name, it.item.currencyName, it.getTotalTicketAmount()) }
 
         viewModelScope.launch {
             when(val result = executeTransactions(clientCode, transactions)) {
@@ -176,6 +176,10 @@ open class ItemSelectorFragmentViewModel(
                 }
             }
         }
+    }
+
+    fun onTransactionHandled() {
+        _transactionResult.value = null
     }
 
     private fun initializeSelectable() {

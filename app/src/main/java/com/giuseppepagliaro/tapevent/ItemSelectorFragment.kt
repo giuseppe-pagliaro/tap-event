@@ -168,6 +168,8 @@ abstract class ItemSelectorFragment : Fragment(R.layout.fragment_item_selector),
 
         // Configuro l'OnTransactionResult Toast
         viewModel.transactionResult.observe(viewLifecycleOwner) { result ->
+            if (result == null) return@observe
+
             if (result == TransactionResult.OK)
                 Toast.makeText(
                     context,
@@ -180,6 +182,8 @@ abstract class ItemSelectorFragment : Fragment(R.layout.fragment_item_selector),
                     context.getString(R.string.item_selector_transaction_fail),
                     Toast.LENGTH_SHORT
                 ).show()
+
+            viewModel.onTransactionHandled()
         }
     }
 

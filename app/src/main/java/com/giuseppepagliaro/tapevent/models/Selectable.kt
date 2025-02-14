@@ -16,5 +16,6 @@ abstract class Selectable(
     val thumbnail: Uri
         get() = Uri.parse(thumbnailUri ?: Product.DEFAULT_THUMBNAIL_URL)
 
-    abstract fun getPrice(count: Int = 1): String
+    abstract fun getTicketAmount(count: Int = 1): Int
+    abstract fun getPriceStr(count: Int = 1): String
 }

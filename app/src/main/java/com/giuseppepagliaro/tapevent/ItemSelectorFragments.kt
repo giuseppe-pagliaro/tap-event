@@ -82,7 +82,7 @@ private class ItemSelectorViewModelProvider<T : SelectableRepository>(
 
     init {
         val database = TapEventDatabase.getDatabase(activity)
-        customerRepository = CustomerRepository(database, eventCod)
+        customerRepository = CustomerRepository(activity, database, eventCod)
         selectableRepository = selectableRepositoryType.primaryConstructor?.call(database, eventCod)
             ?: throw IllegalArgumentException("Invalid Repository Type")
     }
@@ -201,14 +201,16 @@ private class DummyHelper {
         name: String,
         private val price: Float
     ) : Selectable(name, "dummy$") {
-        override fun getPrice(count: Int): String {
+        override fun getPriceStr(count: Int): String {
             val totalPrice = price * count
             val formatter = BigDecimal(totalPrice.toDouble())
             return "${formatter.setScale(2, RoundingMode.HALF_EVEN)} $currencyName"
         }
 
+        override fun getTicketAmount(count: Int): Int = 1
+
         override fun toString(): String {
-            return "DummySelectable($name, ${getPrice()})"
+            return "DummySelectable($name, ${getPriceStr()})"
         }
     }
 }

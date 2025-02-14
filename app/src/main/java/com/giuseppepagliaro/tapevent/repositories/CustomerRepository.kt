@@ -1,5 +1,6 @@
 package com.giuseppepagliaro.tapevent.repositories
 
+import android.content.Context
 import android.database.sqlite.SQLiteException
 import android.net.Uri
 import androidx.lifecycle.LiveData
@@ -14,14 +15,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.security.KeyStore
-import java.security.PrivateKey
 import java.security.SecureRandom
 import java.util.UUID
-import javax.crypto.KeyGenerator
-import javax.crypto.SecretKey
 
 class CustomerRepository(
+    context: Context,
+
     private val database: TapEventDatabase,
     private val eventCod: Long
 ) {
@@ -30,41 +29,34 @@ class CustomerRepository(
     }
 
     private val eventsRepository = EventsRepository(database)
+    private val sharedPreferences = context.getSharedPreferences(PASSCODE_ALIAS, Context.MODE_PRIVATE)
 
     suspend fun getCipherPassphrase(sessionId: String): String? {
         val passcode: String?
-
         withContext(Dispatchers.IO) {
             database.sessions().getInternalCodBySession(sessionId) ?: run {
                 passcode = null
                 return@withContext
             }
 
-            // Inizializza il Keystore
-            val keyStore = KeyStore.getInstance("AndroidKeyStore")
-            keyStore.load(null)
-
-            // Tenta di ottenere la passphrase salvata nel Keystore
-            val existingKey = keyStore.getKey(PASSCODE_ALIAS, null) as SecretKey?
+            // Tenta di ottenere la passphrase salvata
+            val existingKey = sharedPreferences.getString("passphrase", null)
 
             // Se la passphrase esiste già, la restituisce come stringa
             if (existingKey != null) {
-                passcode = String(existingKey.encoded)
+                passcode = existingKey
                 return@withContext
             }
 
             // Se la passphrase non esiste, la creiamo
             val secureRandom = SecureRandom()
-            val randomBytes = ByteArray(32)   // Generiamo una passphrase di 256 bit
+            val randomBytes = ByteArray(16)   // Generiamo una passphrase di 128 bit
             secureRandom.nextBytes(randomBytes)
 
-            // Memorizziamo la passphrase nel Keystore come una chiave segreta
-            val keyGenerator = KeyGenerator.getInstance("AES", "AndroidKeyStore")
-            keyGenerator.init(256) // 256-bit chiave AES
-            val key = keyGenerator.generateKey()
-
-            // Salviamo la passphrase nel Keystore con l'alias
-            keyStore.setEntry(PASSCODE_ALIAS, KeyStore.PrivateKeyEntry(key as PrivateKey, null), null)
+            // Salviamo la passphrase
+            sharedPreferences.edit()
+                .putString("passphrase", String(randomBytes))
+                .apply()
 
             // Restituiamo la passphrase come stringa
             passcode = String(randomBytes)
@@ -144,7 +136,7 @@ class CustomerRepository(
                 if (owns == null) return@outerSource
 
                 var ret: List<Displayable> = listOf()
-                CoroutineScope(Dispatchers.IO).launch {
+                CoroutineScope(Dispatchers.Main).launch {
 
                     // Popolo la lista con un valore di SoldIn temporaneo.
                     ret = owns.map { own ->
@@ -176,9 +168,9 @@ class CustomerRepository(
                             }
                         }
                     }
-                }.invokeOnCompletion { CoroutineScope(Dispatchers.Main).launch {
+                }.invokeOnCompletion {
                     value = ret
-                } }
+                }
             }
         }
     }

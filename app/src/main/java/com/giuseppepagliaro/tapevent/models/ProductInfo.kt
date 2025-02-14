@@ -16,7 +16,9 @@ class ProductInfo : Selectable {
         this.ticketName = ticketName
     }
 
-    override fun getPrice(count: Int): String {
+    override fun getTicketAmount(count: Int): Int = priceTickets * count
+
+    override fun getPriceStr(count: Int): String {
         return "${ priceTickets * count } $ticketName"
     }
 }

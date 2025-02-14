@@ -42,7 +42,7 @@ class ItemSelectableAdapter(
         Glide.with(context).load(selectable.thumbnail).into(holder.ivThumbnail)
         holder.tvTitle.text = selectable.name
 
-        holder.tvPrice.text = selectable.getPrice()
+        holder.tvPrice.text = selectable.getPriceStr()
 
         holder.setOnClickListener {
             onSelect(position)

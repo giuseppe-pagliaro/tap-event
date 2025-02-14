@@ -32,7 +32,7 @@ class EventFragmentImpl : EventFragment() {
             ?: throw IllegalArgumentException("Event cod needed to start an EventFragment.")
 
         eventsRepository = EventsRepository(TapEventDatabase.getDatabase(activity))
-        clientRepository = CustomerRepository(TapEventDatabase.getDatabase(activity), eventCod)
+        clientRepository = CustomerRepository(activity, TapEventDatabase.getDatabase(activity), eventCod)
 
         return EventFragmentViewModel.Factory(
             this::getEventInfo,
@@ -42,8 +42,9 @@ class EventFragmentImpl : EventFragment() {
         )
     }
 
-    override fun putSessionIdIntoIntent(intent: Intent) {
+    override fun putInfoIntoIntent(intent: Intent) {
         intent.putExtra("session_id", sessionId)
+        intent.putExtra("event_cod", eventCod)
     }
 
     private suspend fun getEventInfo(): LiveData<EventInfo> {
@@ -109,5 +110,5 @@ class DummyEventFragment : EventFragment() {
         return dummyFactory
     }
 
-    override fun putSessionIdIntoIntent(intent: Intent) { }
+    override fun putInfoIntoIntent(intent: Intent) { }
 }

@@ -15,7 +15,7 @@
     <string name="item_selector_title_placeholder">Nome Location</string>
     <string name="item_selector_btn_selection_finalize_descriptor">completa selezione</string>
     <string name="item_selector_transaction_success">Transazione Completata</string>
-    <string name="item_selector_transaction_fail">Transazione Fallita</string>
+    <string name="item_selector_transaction_fail">Transazione Fallita, fondi insufficienti</string>
     <string name="item_selector_btn_clear_descriptor">cancella selezione</string>
     <string name="item_selector_btn_add_customer_descriptor">aggiungi un cliente</string>
     <string name="item_selector_select_one_item">Seleziona almeno un elemento</string>

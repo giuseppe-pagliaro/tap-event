@@ -97,9 +97,11 @@ class StandRepository(
             val upsert = ArrayList<Owns>()
             val delete = ArrayList<Owns>()
 
+            // Set up "ownedTicketsMap".
             for (ticket in ownedTickets)
                 ownedTicketsMap[ticket.name] = ticket.count
 
+            // Applica le transazioni a "ownedTicketsMap".
             for (transaction in items) {
                 val ownedCount = ownedTicketsMap[transaction.currencyName] ?: run {
                     result = TransactionResult.INSUFFICIENT_FUNDS
@@ -111,11 +113,17 @@ class StandRepository(
                     return@withContext
                 }
                 else if (ownedCount == transaction.count) {
-                    delete.add(Owns(customerId, eventCod, transaction.currencyName, ownedCount))
+                    ownedTicketsMap.remove(transaction.currencyName)
+                    delete.add(Owns(customerId, eventCod, transaction.currencyName, transaction.count))
                 }
                 else {
-                    upsert.add(Owns(customerId, eventCod, transaction.currencyName, ownedCount - transaction.count))
+                    ownedTicketsMap[transaction.currencyName] = ownedCount - transaction.count
                 }
+            }
+
+            // Set up della lista upsert.
+            for (entry in ownedTicketsMap) {
+                upsert.add(Owns(customerId, eventCod, entry.key, entry.value))
             }
 
             try {

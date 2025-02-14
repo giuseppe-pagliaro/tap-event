@@ -27,7 +27,7 @@ class TicketsListActivity : ListActivity() {
         clientCod = intent.getStringExtra("client_cod")
             ?: throw IllegalArgumentException("Client cod is required for TicketsListActivity")
 
-        customerRepository = CustomerRepository(TapEventDatabase.getDatabase(this), eventCod)
+        customerRepository = CustomerRepository(this, TapEventDatabase.getDatabase(this), eventCod)
 
         return ListActivityViewModel.Factory(
             getString(R.string.event_tickets_title),

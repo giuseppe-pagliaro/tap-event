@@ -12,7 +12,7 @@ import com.giuseppepagliaro.tapevent.entities.TicketType
 interface TicketTypeDao {
     @Query("SELECT * " +
             "FROM ticket_type AS t " +
-            "WHERE (t.eventCod, t.name) = (:eventCod, :name)"
+            "WHERE t.eventCod = :eventCod AND t.name = :name"
     )
     fun getByEventAndName(eventCod: Long, name: String): LiveData<TicketType>
 

@@ -48,7 +48,7 @@ class ItemSelectedAdapter(
         else
             holder.tvTitleCount.text = selected.item.name
 
-        holder.tvTotalCost.text = selected.getTotalPrice()
+        holder.tvTotalCost.text = selected.getTotalPriceStr()
 
         holder.btnAdd.setOnClickListener {
             onItemAdded(position)

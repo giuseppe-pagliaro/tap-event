@@ -13,16 +13,12 @@ import com.giuseppepagliaro.tapevent.models.TicketCount
 interface OwnsDao {
     companion object {
         private const val GET_BY_CUSTOMER_QUERY =
-            "SELECT " +
-                "t.eventCod AS eventCod, " +
-                "t.name AS name, " +
-                "o.count AS count " +
-            "FROM " +
-                "ticket_type AS t, " +
-                "owns AS o " +
-            "WHERE " +
-                "(t.eventCod, t.name) = (o.ticketTypeEventCod, o.ticketTypeName) AND " +
-                "o.customer = :id"
+            "SELECT t.eventCod, t.name, o.count " +
+                    "FROM ticket_type AS t, owns AS o " +
+                    "WHERE " +
+                        "t.eventCod = o.ticketTypeEventCod AND " +
+                        "t.name = o.ticketTypeName AND " +
+                        "o.customer = :id"
     }
 
     @Query(GET_BY_CUSTOMER_QUERY)

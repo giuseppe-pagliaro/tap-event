@@ -13,7 +13,8 @@ interface CpManagesDao {
     @Query("SELECT c.eventCod, c.name " +
             "FROM cash_point AS c, cp_manages AS x " +
             "WHERE " +
-                "(c.eventCod, c.name) = (x.eventCod, x.cashPointName) AND " +
+                "c.eventCod = x.eventCod AND " +
+                "c.name = x.cashPointName AND " +
                 "x.eventCod = :eventCod AND " +
                 "x.user = :userCod"
     )

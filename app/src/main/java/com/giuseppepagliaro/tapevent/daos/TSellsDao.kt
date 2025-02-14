@@ -14,16 +14,16 @@ interface TSellsDao {
     @Query("SELECT t.eventCod, t.name, t.price " +
             "FROM ticket_type AS t, t_sells AS s " +
             "WHERE " +
-                "(t.eventCod, t.name) = (s.ticketTypeEventCod, s.ticketTypeName) AND " +
-                "(s.cashPointEventCod, s.cashPointName) = (:eventCod, :name)"
+                "t.eventCod = s.ticketTypeEventCod AND t.name = s.ticketTypeName AND " +
+                "s.cashPointEventCod = :eventCod AND s.cashPointName = :name"
     )
     fun getByCashPoint(eventCod: Long, name: String): List<TicketType>
 
     @Query("SELECT * " +
             "FROM cash_point AS c, t_sells AS s " +
             "WHERE " +
-                "(c.eventCod, c.name) = (s.cashPointEventCod, s.cashPointName) AND " +
-                "(s.ticketTypeEventCod, s.ticketTypeName) = (:eventCod, :name)"
+                "c.eventCod = s.cashPointEventCod AND c.name = s.cashPointName AND " +
+                "s.ticketTypeEventCod = :eventCod AND s.ticketTypeName = :name"
     )
     fun getCashPointsThatSellsTicket(eventCod: Long, name: String): LiveData<List<CashPoint>>
 

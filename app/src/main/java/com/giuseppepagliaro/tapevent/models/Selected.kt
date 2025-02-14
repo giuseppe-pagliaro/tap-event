@@ -4,7 +4,11 @@ data class Selected(
     val item: Selectable,
     val count: Int
 ) {
-    fun getTotalPrice(): String {
-        return item.getPrice(count)
+    fun getTotalTicketAmount(): Int {
+        return item.getTicketAmount(count)
+    }
+
+    fun getTotalPriceStr(): String {
+        return item.getPriceStr(count)
     }
 }

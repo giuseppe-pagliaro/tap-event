@@ -14,16 +14,16 @@ interface PSellsDao {
     @Query("SELECT p.name, p.thumbnail AS thumbnailUri, x.ticketName, x.priceTickets " +
             "FROM product AS p, p_sells AS x " +
             "WHERE " +
-                "(p.eventCod, p.name) = (x.productEventCod, x.productName) AND " +
-                "(x.standEventCod, x.standName) = (:eventCod, :name)"
+                "p.eventCod = x.productEventCod AND p.name = x.productName AND " +
+                "x.standEventCod = :eventCod AND x.standName = :name"
     )
     fun getByStand(eventCod: Long, name: String): List<ProductInfo>
 
     @Query("SELECT s.eventCod, s.name " +
             "FROM stand AS s, p_sells AS x " +
             "WHERE " +
-                "(s.eventCod, s.name) = (x.standEventCod, x.standName) AND " +
-                "(x.productEventCod, x.productName) = (:eventCod, :name)"
+                "s.eventCod = x.standEventCod AND s.name = x.standName AND " +
+                "x.productEventCod = :eventCod AND x.productName = :name"
     )
     fun getStandsThatSellsProduct(eventCod: Long, name: String): LiveData<List<Stand>>
 
