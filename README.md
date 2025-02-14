@@ -10,5 +10,5 @@
 
 ## Bug Noti
 
-- Race condition sul Callback della pre-popolazione del database, che potrebbe portare la prima query (solitamente il login) a fallire. Dalla seconda query in poi funziona.
+- Race condition sul Callback della pre-popolazione del database, che potrebbe portare la prima query (solitamente il login) ad essere eseguita prima che i dati siano presenti. Dalla seconda query in poi funziona.
 - I live data dei campi "Sold in" vengono rimossi prima del dovuto.
